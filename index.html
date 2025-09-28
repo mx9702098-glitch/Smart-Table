@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乡村/社区表格处理通用工作流程</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f7f9;
+            --card-bg-color: #ffffff;
+            --text-color: #2d3748;
+            --subtle-text-color: #718096;
+            --primary-color: #4a90e2;
+            --border-color: #e2e8f0;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--subtle-text-color);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        main {
+            background-color: var(--card-bg-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 25px -5px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        main:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mermaid {
+            text-align: center;
+        }
+
+        /* Mermaid Node Styling */
+        .node rect, .node circle, .node polygon, .node path {
+            stroke: var(--primary-color) !important;
+            stroke-width: 2px !important;
+            fill: #f0f8ff !important;
+        }
+        .node.stage-1 rect { fill: #fff5e6 !important; stroke: #ff9900 !important; }
+        .node.stage-2 rect { fill: #e6f7ff !important; stroke: #007bff !important; }
+        .node.stage-3 rect { fill: #e6ffee !important; stroke: #28a745 !important; }
+        .node.stage-4 rect { fill: #ffeeee !important; stroke: #dc3545 !important; }
+        .node.stage-5 rect { fill: #f0e6ff !important; stroke: #6f42c1 !important; }
+
+        .node .label {
+            color: var(--text-color) !important;
+            font-weight: 500 !important;
+        }
+
+        .edgeLabel {
+            background-color: var(--bg-color) !important;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--subtle-text-color);
+            font-size: 0.9rem;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            header h1 { font-size: 2rem; }
+            main { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>乡村/社区表格处理通用工作流程</h1>
+            <p>基于8份访谈记录综合提炼的可视化流程图。点击任意流程节点可查看该环节的详细说明。</p>
+        </header>
+
+        <main>
+            <div class="mermaid">
+graph TD
+    subgraph "阶段一: 任务接收与分派"
+        A1["上级部门通过微信/QQ下发任务"]:::stage-1
+        A2["村/社区两委接收"]:::stage-1
+        A3{"是否需要实地采集?"}:::stage-1
+    end
+
+    subgraph "阶段二: 数据采集"
+        B1["分派给网格员/小组长"]:::stage-2
+        B2{"采集方式?"}:::stage-2
+        B3["打印空表后, 入户/电话手写记录"]:::stage-2
+        B4["使用腾讯文档在线协作填写"]:::stage-2
+        B5["微信群接龙/文字上报"]:::stage-2
+    end
+
+    subgraph "阶段三: 数据整合与处理 (核心瓶颈)"
+        C0["村委干部直接利用现有数据"]:::stage-3
+        C1["手动录入: 将手写纸质信息敲入电脑"]:::stage-3
+        C2["数据导出: 从在线文档下载Excel"]:::stage-3
+        C3["手动整理: 复制粘贴微信群信息"]:::stage-3
+        C4["数据整合"]:::stage-3
+        C5["数据匹配: 从户籍总表/其他母表查找并补充基础信息"]:::stage-3
+        C6{"操作者Excel技能水平?"}:::stage-3
+        C7["使用VLOOKUP等函数自动匹配"]:::stage-3
+        C8["手动逐条复制粘贴"]:::stage-3
+        C9["完成数据整理"]:::stage-3
+    end
+
+    subgraph "阶段四: 审核与上报"
+        D1["内部审核"]:::stage-4
+        D2{"是否需要纸质盖章?"}:::stage-4
+        D3["通过微信/QQ提交电子版"]:::stage-4
+        D4["打印/盖章/扫描后提交"]:::stage-4
+        D5["上报完成"]:::stage-4
+    end
+
+    subgraph "阶段五: 归档与复用"
+        E1["数据存档"]:::stage-5
+        E2["保存在分管干部个人电脑"]:::stage-5
+        E3["形成数据孤岛, 复用困难"]:::stage-5
+    end
+
+    A1 --> A2 --> A3
+
+    A3 -- 是 --> B1 --> B2
+    B2 -- 主流方式 (纸质) --> B3
+    B2 -- 高级用户 (在线) --> B4
+    B2 -- 简单信息 (微信) --> B5
+
+    A3 -- 否 --> C0 --> C4
+
+    B3 --> C1 --> C4
+    B4 --> C2 --> C4
+    B5 --> C3 --> C4
+    
+    C4 --> C5 --> C6
+    C6 -- 高级 (少数) --> C7 --> C9
+    C6 -- 普通 (多数) --> C8 --> C9
+
+    C9 --> D1 --> D2
+    D2 -- 否 (主流) --> D3 --> D5
+    D2 -- 是 (少数) --> D4 --> D5
+
+    D5 --> E1 --> E2 --> E3
+
+    classDef stage-1 fill:#fff9e6,stroke:#ffb300,stroke-width:2px,color:#333;
+    classDef stage-2 fill:#e3f2fd,stroke:#2196f3,stroke-width:2px,color:#333;
+    classDef stage-3 fill:#e8f5e9,stroke:#4caf50,stroke-width:2px,color:#333;
+    classDef stage-4 fill:#ffebee,stroke:#f44336,stroke-width:2px,color:#333;
+    classDef stage-5 fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,color:#333;
+
+    click A1 call showDetails("A1") "点击查看详情"
+    click A2 call showDetails("A2") "点击查看详情"
+    click A3 call showDetails("A3") "点击查看详情"
+    click B1 call showDetails("B1") "点击查看详情"
+    click B2 call showDetails("B2") "点击查看详情"
+    click B3 call showDetails("B3") "点击查看详情"
+    click B4 call showDetails("B4") "点击查看详情"
+    click B5 call showDetails("B5") "点击查看详情"
+    click C0 call showDetails("C0") "点击查看详情"
+    click C1 call showDetails("C1") "点击查看详情"
+    click C2 call showDetails("C2") "点击查看详情"
+    click C3 call showDetails("C3") "点击查看详情"
+    click C4 call showDetails("C4") "点击查看详情"
+    click C5 call showDetails("C5") "点击查看详情"
+    click C6 call showDetails("C6") "点击查看详情"
+    click C7 call showDetails("C7") "点击查看详情"
+    click C8 call showDetails("C8") "点击查看详情"
+    click C9 call showDetails("C9") "点击查看详情"
+    click D1 call showDetails("D1") "点击查看详情"
+    click D2 call showDetails("D2") "点击查看详情"
+    click D3 call showDetails("D3") "点击查看详情"
+    click D4 call showDetails("D4") "点击查看详情"
+    click D5 call showDetails("D5") "点击查看详情"
+    click E1 call showDetails("E1") "点击查看详情"
+    click E2 call showDetails("E2") "点击查看详情"
+    click E3 call showDetails("E3") "点击查看详情"
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2025 乡村信息化工作流分析报告</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        const details = {
+            "A1": "阶段一: 任务接收与分派 - 上级部门（主要是镇/街道办）通过微信或QQ等即时通讯工具下发填报任务。",
+            "A2": "阶段一: 任务接收与分派 - 村/社区两委在接收后，进行初步判断和分派。",
+            "A3": "阶段一: 任务接收与分派 - 决策节点：判断任务是否需要到一线实地采集新数据。",
+            "B1": "阶段二: 数据采集 - 将需要实地采集的任务分派给最熟悉片区的网格员或村民小组长。",
+            "B2": "阶段二: 数据采集 - 决策节点：根据任务性质和执行人能力，选择不同的采集方式。",
+            "B3": "阶段二: 数据采集 - 最主流的方式。由年龄偏大的小组长通过入户走访、电话等方式手写记录信息。",
+            "B4": "阶段二: 数据采集 - 少数数字化水平较高的村社使用腾讯文档等在线工具进行高效协作。",
+            "B5": "阶段二: 数据采集 - 针对非常简单的信息，直接在微信群里通过接龙或文字上报，快速收集。",
+            "C0": "阶段三: 数据整合与处理 - 对于不需要采集新数据的任务，村委干部直接利用手头的现有资料进行处理。",
+            "C1": "阶段三: 数据整合与处理 - 核心痛点！将手写纸质信息一个字一个字地手动敲入电脑，效率极低。",
+            "C2": "阶段三: 数据整合与处理 - 将在线协作文档（如腾讯文档）中的数据下载为本地Excel文件，以便后续处理。",
+            "C3": "阶段三: 数据整合与处理 - 整理微信群中的零散信息，复制粘贴到Excel表格中。",
+            "C4": "阶段三: 数据整合与处理 - 将来自不同采集渠道的数据汇集到一张主要的Excel工作表中。",
+            "C5": "阶段三: 数据整合与处理 - 关键步骤。根据新表格要求，从户籍总表、低保户名单等多个“母表”中查找并补充基础信息。",
+            "C6": "阶段三: 数据整合与处理 - 决策节点：此环节的效率完全取决于操作者的Excel技能水平，造成巨大差异。",
+            "C7": "阶段三: 数据整合与处理 - 少数“专家”能用VLOOKUP等函数快速实现跨表数据的自动匹配和填充。",
+            "C8": "阶段三: 数据整合与处理 - 大多数普通用户只会“笨办法”，依靠人眼核对和手动逐条复制粘贴，耗时且易错。",
+            "C9": "阶段三: 数据整合与处理 - 经过一系列处理后，形成一份符合上报要求的、完整的电子表格。",
+            "D1": "阶段四: 审核与上报 - 在提交前，由负责人进行初步检查，确认无明显遗漏或格式错误。",
+            "D2": "阶段四: 审核与上报 - 决策节点：判断任务是否涉及责任追究或资金发放等重大事项。",
+            "D3": "阶段四: 审核与上报 - 绝大多数情况，直接通过微信将整理好的Excel文件提交给上级部门。",
+            "D4": "阶段四: 审核与上报 - 少数敏感情况下，需要打印、盖章并提交纸质版或扫描件，作为规避责任的依据。",
+            "D5": "阶段四: 审核与上报 - 标志着单次填报任务的闭环结束。",
+            "E1": "阶段五: 归档与复用 - 对已完成的工作进行资料留存。",
+            "E2": "阶段五: 归档与复用 - 完成的表格通常直接保存在具体负责人的个人电脑中，未进行集中管理。",
+            "E3": "阶段五: 归档与复用 - 由于数据分散存储、格式不一，形成了“数据孤岛”，导致历史数据难以被查找和复用。"
+        };
+
+        function showDetails(nodeId) {
+            if (details[nodeId]) {
+                alert(details[nodeId]);
+            }
+        }
+
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#f4f7f9',
+                primaryTextColor: '#2d3748',
+                lineColor: '#a0aec0',
+                fontSize: '16px'
+            }
+        });
+    </script>
+
+</body>
+</html>
