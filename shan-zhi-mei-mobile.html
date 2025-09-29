@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>善治美 - 移动端</title>
+    <title>善治美 - 村两委管理系统</title>
     <style>
         * {
             margin: 0;
@@ -48,242 +48,540 @@
             opacity: 0.9;
         }
 
+        /* 角色选择页面 */
+        .role-selection {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .role-selection h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .role-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .role-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .role-btn.committee {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .role-btn.villager {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .role-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        /* 村两委主界面 */
+        .committee-main {
+            display: none;
+            padding: 20px;
+        }
+
+        .main-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e8ecf0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 24px;
+        }
+
+        .task-management .section-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .village-data .section-icon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .section-title {
+            flex: 1;
+        }
+
+        .section-title h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .section-title p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .function-btn {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .function-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .function-btn .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .function-btn .text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 功能页面通用样式 */
+        .function-page {
+            display: none;
+            padding: 20px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e8ecf0;
+        }
+
         .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #667eea;
+            cursor: pointer;
+            margin-right: 16px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #f0f2ff;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 启动任务页面 */
+        .upload-area {
+            background: white;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #9ca3af;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .build-options {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .option-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .option-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .option-btn.active {
+            background: #f0f2ff;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .option-btn h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .option-btn p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+
+        /* 数据采集页面 */
+        .task-dashboard {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .task-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .task-status {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .progress-section {
+            margin-bottom: 20px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* 村民列表 */
+        .villager-list {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .list-header {
+            background: #f8f9fa;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .villager-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .villager-item:last-child {
+            border-bottom: none;
+        }
+
+        .villager-info {
+            flex: 1;
+        }
+
+        .villager-name {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .villager-details {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .villager-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: 12px;
+        }
+
+        .mini-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mini-btn.fill {
+            background: #667eea;
+            color: white;
+        }
+
+        .mini-btn.remind {
+            background: #ffc107;
+            color: #333;
+        }
+
+        /* 数据维护页面 */
+        .data-management {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f8f9fa;
+        }
+
+        .search-icon {
             position: absolute;
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
+            color: #6c757d;
         }
 
-        .mobile-content {
-            padding: 16px;
+        .data-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 8px;
         }
 
-        /* 卡片样式 */
-        .mobile-card {
-            background: white;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-
-        .mobile-card-header {
-            padding: 20px 16px 16px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .mobile-card-header h2 {
-            font-size: 18px;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .mobile-card-header .subtitle {
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        .mobile-card-content {
-            padding: 16px;
-        }
-
-        /* 按钮样式 */
-        .mobile-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 12px;
-        }
-
-        .mobile-btn:last-child {
-            margin-bottom: 0;
-        }
-
-        .mobile-btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .mobile-btn-secondary {
-            background: #f8f9fa;
-            color: #495057;
+        .filter-btn {
+            padding: 8px 16px;
             border: 1px solid #e9ecef;
-        }
-
-        .mobile-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Tab样式 */
-        .mobile-tabs {
-            display: flex;
+            border-radius: 20px;
             background: white;
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .mobile-tab {
-            flex: 1;
-            padding: 12px 8px;
-            text-align: center;
-            border-radius: 6px;
             font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            color: #7f8c8d;
-        }
-
-        .mobile-tab.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .mobile-tab-content {
-            display: none;
-        }
-
-        .mobile-tab-content.active {
-            display: block;
-        }
-
-        /* 角色选择页面 */
-        .role-selection {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .role-selection h1 {
-            font-size: 28px;
-            color: #2c3e50;
-            margin-bottom: 12px;
-        }
-
-        .role-selection p {
-            color: #7f8c8d;
-            font-size: 16px;
-            margin-bottom: 40px;
-            line-height: 1.5;
-        }
-
-        .role-button {
-            width: 100%;
-            max-width: 280px;
-            padding: 18px;
-            margin-bottom: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
+            white-space: nowrap;
             transition: all 0.3s ease;
         }
 
-        .role-button-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .filter-btn.active {
+            background: #667eea;
             color: white;
+            border-color: #667eea;
         }
 
-        .role-button-secondary {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .mobile-header {
+                padding: 16px 12px;
+            }
+
+            .function-page {
+                padding: 16px 12px;
+            }
+
+            .section-card {
+                padding: 20px 16px;
+            }
+
+            .function-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
         }
 
-        /* 村两委主页 */
-        .committee-main {
-            padding: 16px;
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        .step-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-
-        .step-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .step-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-
-        .step-card:active {
-            transform: scale(0.98);
-        }
-
-        .step-number {
-            display: inline-block;
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 32px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .step-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-
-        .step-desc {
-            font-size: 14px;
-            color: #7f8c8d;
-            line-height: 1.4;
-        }
-
-        /* 上传菜单样式 */
-        .upload-menu {
-            background: white;
-            border-radius: 12px;
-            margin-top: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            overflow: hidden;
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -294,456 +592,19 @@
             }
         }
 
-        .upload-option {
-            display: flex;
-            align-items: center;
-            padding: 20px 16px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .upload-option:last-child {
-            border-bottom: none;
-        }
-
-        .upload-option:active {
-            background: #f8f9fa;
-        }
-
-        .upload-icon {
-            font-size: 24px;
-            margin-right: 16px;
-            width: 40px;
-            text-align: center;
-        }
-
-        .upload-text h5 {
-            font-size: 16px;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .upload-text p {
-            font-size: 13px;
-            color: #7f8c8d;
-            line-height: 1.4;
-        }
-
-        /* 数据采集样式 */
-        .kanban {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .kanban-column {
-            background: white;
-            border-radius: 8px;
-            padding: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .kanban-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .kanban-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .kanban-count {
-            background: #667eea;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-        }
-
-        .villager-item {
-            background: #f8f9fa;
-            border-radius: 6px;
-            padding: 8px;
-            margin-bottom: 8px;
-            font-size: 13px;
-        }
-
-        .villager-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .villager-name {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .villager-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn-small {
-            padding: 4px 8px;
-            border: none;
-            border-radius: 4px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .action-btn-secondary {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        /* 通知对象选择 */
-        .notification-form {
-            background: white;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-
-        .form-select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
-            background: white;
-        }
-
-        .form-textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        /* 数据审核表格 */
-        .mobile-table {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .table-header {
-            background: #f8f9fa;
-            padding: 12px 16px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .table-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .selected-count {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .table-row {
-            padding: 16px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .table-row:last-child {
-            border-bottom: none;
-        }
-
-        .row-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .row-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .row-checkbox {
-            width: 18px;
-            height: 18px;
-        }
-
-        .row-info {
-            font-size: 13px;
-            color: #7f8c8d;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .row-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-approved {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-rejected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        /* 冲突处理样式 */
-        .conflict-card {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .conflict-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-
-        .conflict-header-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .conflict-header-item h4 {
-            font-size: 16px;
-            color: #2c3e50;
-        }
-
-        .conflict-type {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .conflict-field {
-            color: #7f8c8d;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .conflict-comparison {
-            margin-bottom: 16px;
-        }
-
-        .value-box {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border: 2px solid;
-        }
-
-        .value-box.old-value {
-            background: #fff5f5;
-            border-color: #ff6b6b;
-        }
-
-        .value-box.new-value {
-            background: #f0fff4;
-            border-color: #51cf66;
-        }
-
-        .value-label {
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 4px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .value-content {
-            font-size: 14px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .conflict-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn:first-child {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .action-btn.secondary {
-            background: #f8f9fa;
-            color: #495057;
-            border: 1px solid #e9ecef;
-        }
-
-        /* 村大表管理 */
-        .search-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .add-btn {
-            padding: 12px 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .villager-card {
-            background: white;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .villager-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .villager-name-large {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .villager-info {
-            font-size: 13px;
-            color: #7f8c8d;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-
-        .villager-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .icon-btn {
-            padding: 8px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .icon-btn-view {
-            background: #667eea;
-            color: white;
-        }
-
-        .icon-btn-edit {
-            background: #51cf66;
-            color: white;
-        }
-
-        /* Toast样式 */
-        .toast {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 1000;
-            animation: fadeInOut 2s ease;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            20%, 80% { opacity: 1; }
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* 隐藏类 */
@@ -751,2716 +612,637 @@
             display: none !important;
         }
 
-        /* 页面切换动画 */
-        .page {
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* 批量操作栏 */
-        .batch-actions {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 12px 16px;
-            border-top: 1px solid #e0e0e0;
-            display: none;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
-
-        .batch-actions.show {
-            display: block;
-        }
-
-        .batch-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 0 4px;
-        }
-
-        .batch-approve {
-            background: #51cf66;
-            color: white;
-        }
-
-        .batch-reject {
-            background: #ff6b6b;
-            color: white;
-        }
-        /* OCR识别相关样式 */
-        .progress-container {
-            text-align: center;
-            padding: 20px 0;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #f0f0f0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 4px;
-        }
-
-        .progress-text {
-            color: #7f8c8d;
-            font-size: 14px;
-        }
-
-        .field-item {
-            background: white;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .field-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .field-info {
-            flex: 1;
-        }
-
-        .field-name {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 4px;
-            font-size: 16px;
-        }
-
-        .field-meta {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .field-tag {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .field-tag.required {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-
-        .field-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .field-btn {
-            background: none;
-            border: none;
-            padding: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.2s ease;
-        }
-
-        .field-btn:hover {
-            background: rgba(0,0,0,0.1);
-            transform: scale(1.1);
-        }
-
-        .field-content {
-            padding: 16px;
-        }
-
-        .field-preview {
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-            color: #6c757d;
-            font-size: 14px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            padding: 20px;
-            position: sticky;
-            bottom: 0;
-            background: white;
-            border-top: 1px solid #dee2e6;
-            margin: 0 -20px -20px -20px;
-        }
-
-        .action-buttons .mobile-btn {
-            flex: 1;
-        }
-
-        /* 模态框样式 */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+        /* 加载状态 */
+        .loading {
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            padding: 20px;
+            padding: 40px;
+            color: #666;
         }
 
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 20px 0 20px;
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 18px;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #7f8c8d;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e9ecef;
+            border-top: 2px solid #667eea;
             border-radius: 50%;
-            transition: all 0.2s ease;
-        }
-
-        .modal-close:hover {
-            background: #f8f9fa;
-            color: #2c3e50;
-        }
-
-        .modal-body {
-            padding: 0 20px;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 12px;
-            padding: 20px;
-            border-top: 1px solid #dee2e6;
-            margin-top: 20px;
-        }
-
-        .modal-footer .mobile-btn {
-            flex: 1;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 14px;
-        }
-
-        .form-select, .form-textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.2s ease;
-            box-sizing: border-box;
-        }
-
-        .form-select:focus, .form-textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .switch-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .switch {
-            position: relative;
-            width: 50px;
-            height: 28px;
-            appearance: none;
-            background: #ccc;
-            border-radius: 14px;
-            outline: none;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        .switch:checked {
-            background: #667eea;
-        }
-
-        .switch:before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.2s ease;
-        }
-
-        .switch:checked:before {
-            transform: translateX(22px);
-        }
-
-        .switch-label {
-            margin-left: 12px;
-            color: #2c3e50;
-            font-size: 14px;
-        }
-
-        /* 任务看板样式 */
-        .task-overview {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            color: white;
-        }
-
-        .task-status {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .status-icon {
-            font-size: 24px;
+            animation: spin 1s linear infinite;
             margin-right: 12px;
         }
 
-        .status-info {
-            flex: 1;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        .status-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .status-subtitle {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .status-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .status-badge.active {
-            background: #27ae60;
-        }
-
-        .progress-section {
-            margin-top: 16px;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .progress-label {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .progress-percentage {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .progress-bar-container {
-            margin-bottom: 16px;
-        }
-
-        .progress-bar-bg {
-            background: rgba(255, 255, 255, 0.3);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            background: #27ae60;
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        .progress-stats {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            display: block;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-
-        .view-switcher {
-            display: flex;
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 16px;
-        }
-
-        .view-btn {
-            flex: 1;
-            padding: 8px 16px;
-            border: none;
-            background: transparent;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #7f8c8d;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .view-btn.active {
-            background: white;
-            color: #2c3e50;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .kanban-view {
-            display: none;
-        }
-
-        .kanban-view.active {
-            display: block;
-        }
-
-        .villager-card {
-            background: white;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e9ecef;
-        }
-
-        .villager-card.completed {
-            background: #f8f9fa;
-            border-color: #27ae60;
-        }
-
-        .villager-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .villager-info .villager-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .villager-details {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .villager-status {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .villager-status.pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .villager-status.completed {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .villager-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .remind-btn {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .remind-btn:hover {
-            background: #bbdefb;
-        }
-
-        .fill-btn {
-            background: #f3e5f5;
-            color: #7b1fa2;
-        }
-
-        .fill-btn:hover {
-            background: #e1bee7;
-        }
-
-        .completion-info {
-            padding-top: 8px;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .completion-time {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .batch-actions {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid #e9ecef;
-        }
-
-        /* 线上通知简化样式 */
-        .notification-form {
-            padding: 20px;
-        }
-
-        .form-section {
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin: 0 0 8px 0;
-        }
-
-        .section-subtitle {
-            font-size: 14px;
-            color: #7f8c8d;
-            margin: 0 0 20px 0;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 16px;
-            font-weight: 500;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-
-        .select-wrapper {
-            position: relative;
-        }
-
-        .form-select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            background: white;
-            color: #2c3e50;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 12px center;
-            background-repeat: no-repeat;
-            background-size: 16px;
-        }
-
-        .form-select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        .form-textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            background: white;
-            color: #2c3e50;
-            resize: vertical;
-            min-height: 100px;
-            font-family: inherit;
-            line-height: 1.5;
-        }
-
-        .form-textarea:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        .send-notification-btn {
-            width: 100%;
-            background: #2c3e50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 16px 20px;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 32px;
-        }
-
-        .send-notification-btn:hover {
-            background: #34495e;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
-        }
-
-        .send-notification-btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-icon {
-            font-size: 18px;
-        }
-
-        .btn-text {
-            font-size: 16px;
-        }
-
-        /* 数据维护模块样式 */
-        .module-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .module-tab {
-            flex: 1;
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .module-tab.active {
-            border-color: #3498db;
-            background: #f8fbff;
-        }
-
-        .module-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .module-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .module-desc {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .maintenance-module {
-            display: none;
-        }
-
-        .maintenance-module.active {
-            display: block;
-        }
-
-        .module-header {
-            margin-bottom: 20px;
-        }
-
-        .module-header h2 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin: 0 0 8px 0;
-        }
-
-        .module-header p {
-            font-size: 14px;
-            color: #7f8c8d;
-            margin: 0;
-        }
-
-        .task-stats {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            flex: 1;
-            background: white;
-            border-radius: 8px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-icon {
-            font-size: 20px;
-        }
-
-        .stat-info {
-            flex: 1;
-        }
-
-        .stat-number {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 2px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .task-list {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .task-item {
-            padding: 16px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .task-item:last-child {
-            border-bottom: none;
-        }
-
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .task-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .task-status {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .status-active {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-completed {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .task-info {
-            font-size: 12px;
-            color: #7f8c8d;
-            line-height: 1.4;
-            margin-bottom: 12px;
-        }
-
-        .task-actions {
-            display: flex;
-            gap: 8px;
-        }
-
     </style>
 </head>
 <body>
     <div class="mobile-container">
+        <!-- 头部 -->
+        <div class="mobile-header">
+            <h1>善治美</h1>
+            <p>数字化村务管理系统</p>
+        </div>
+
         <!-- 角色选择页面 -->
-        <div id="role-selection" class="page active">
-            <div class="role-selection">
-                <h1>善治美</h1>
-                <p>数字化村务管理平台<br>请选择您的角色开始使用</p>
-                <button class="role-button role-button-primary" onclick="selectRole('committee')">
-                    👥 我是村两委
+        <div id="roleSelection" class="role-selection">
+            <h2>请选择您的身份</h2>
+            <div class="role-buttons">
+                <button class="role-btn committee" onclick="selectRole('committee')">
+                    <div>👥 我是村两委</div>
                 </button>
-                <button class="role-button role-button-secondary" onclick="selectRole('villager')">
-                    🏠 我是村民
+                <button class="role-btn villager" onclick="selectRole('villager')">
+                    <div>🏠 我是村民</div>
                 </button>
             </div>
         </div>
 
-        <!-- 村两委主页 -->
-        <div id="committee-main" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('role-selection')">← 返回</button>
-                <h1>村两委工作台</h1>
-                <p>数字化村务管理</p>
-            </div>
-            <div class="committee-main">
-                <div class="step-grid">
-                    <div class="step-card" onclick="showPage('task-startup')">
-                        <div class="step-number">1</div>
-                        <div class="step-title">任务启动</div>
-                        <div class="step-desc">灵活的数字化建表，解决数据采集与录入效率低下的问题</div>
+        <!-- 村两委主界面 -->
+        <div id="committeeMain" class="committee-main">
+            <div class="main-sections">
+                <!-- 任务管理板块 -->
+                <div class="section-card task-management">
+                    <div class="section-header">
+                        <div class="section-icon">📋</div>
+                        <div class="section-title">
+                            <h3>任务管理</h3>
+                            <p>表格任务的全流程管理</p>
+                        </div>
                     </div>
-                    <div class="step-card" onclick="showPage('data-collection')">
-                        <div class="step-number">2</div>
-                        <div class="step-title">数据采集</div>
-                        <div class="step-desc">可视化的多渠道任务执行，减轻数据从源头难以实现数字化的问题</div>
-                    </div>
-                    <div class="step-card" onclick="showPage('data-review')">
-                        <div class="step-number">3</div>
-                        <div class="step-title">数据审核与导出</div>
-                        <div class="step-desc">一键生成可提交文件，确保数据准确性</div>
-                    </div>
-                    <div class="step-card" onclick="showPage('data-deposit')">
-                        <div class="step-number">4</div>
-                        <div class="step-title">数据沉淀</div>
-                        <div class="step-desc">带审核机制的智能更新，解决数据孤岛与资产流失的问题</div>
-                    </div>
-                    <div class="step-card" onclick="showPage('data-maintenance')">
-                        <div class="step-number">5</div>
-                        <div class="step-title">数据维护</div>
-                        <div class="step-desc">保障资产的持续"鲜活"，独立管理模块，常态化数据维护</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 任务启动页面 -->
-        <div id="task-startup" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('committee-main')">← 返回</button>
-                <h1>任务启动</h1>
-                <p>灵活的数字化建表</p>
-            </div>
-            <div class="mobile-content">
-                <div class="mobile-tabs">
-                    <div class="mobile-tab active" onclick="switchTab('upload')">上传</div>
-                    <div class="mobile-tab" onclick="switchTab('ocr')">识别</div>
-                </div>
-
-                <!-- 上传Tab -->
-                <div id="upload-tab" class="mobile-tab-content active">
-                    <div class="mobile-card">
-                        <div class="mobile-card-content">
-                            <div style="text-align: center; padding: 20px 0;">
-                                <h4 style="margin-bottom: 8px;">上传文件</h4>
-                                <p style="color: #7f8c8d; margin-bottom: 20px;">支持Excel、PDF、Word格式文件</p>
-                                <button class="mobile-btn mobile-btn-primary" onclick="showUploadMenu()">
-                                    📁 选择上传方式
-                                </button>
-                            </div>
-                            
-                            <!-- 上传选择菜单 -->
-                            <div id="upload-menu" class="upload-menu hidden">
-                                <div class="upload-option" onclick="selectUploadType('local')">
-                                    <div class="upload-icon">📄</div>
-                                    <div class="upload-text">
-                                        <h5>导入本地文件</h5>
-                                        <p>支持 Excel (.xlsx, .xls)、PDF、Word (.docx, .doc) 格式</p>
-                                    </div>
-                                </div>
-                                <div class="upload-option" onclick="selectUploadType('wechat')">
-                                    <div class="upload-icon">💬</div>
-                                    <div class="upload-text">
-                                        <h5>从微信聊天记录导入</h5>
-                                        <p>从微信聊天中选择已发送的文件</p>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="function-grid">
+                        <div class="function-btn" onclick="showPage('taskStart')">
+                            <span class="icon">🚀</span>
+                            <span class="text">启动任务</span>
+                        </div>
+                        <div class="function-btn" onclick="showPage('dataCollection')">
+                            <span class="icon">📊</span>
+                            <span class="text">数据采集</span>
+                        </div>
+                        <div class="function-btn" onclick="showPage('dataReview')">
+                            <span class="icon">✅</span>
+                            <span class="text">数据审核导出</span>
+                        </div>
+                        <div class="function-btn" onclick="showPage('dataDeposit')">
+                            <span class="icon">💾</span>
+                            <span class="text">数据沉淀</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 识别Tab -->
-                <div id="ocr-tab" class="mobile-tab-content">
-                    <div class="mobile-card">
-                        <div class="mobile-card-content">
-                            <div style="text-align: center; padding: 20px 0;">
-                                <h4 style="margin-bottom: 8px;">拍照识别</h4>
-                                <p style="color: #7f8c8d; margin-bottom: 20px;">拍摄纸质表格，OCR智能识别</p>
-                                <button class="mobile-btn mobile-btn-primary" onclick="startCamera()">
-                                    📷 开始拍照
-                                </button>
-                            </div>
+                <!-- 村庄数据板块 -->
+                <div class="section-card village-data">
+                    <div class="section-header">
+                        <div class="section-icon">🏘️</div>
+                        <div class="section-title">
+                            <h3>村庄数据</h3>
+                            <p>村大表数据维护管理</p>
+                        </div>
+                    </div>
+                    <div class="function-grid">
+                        <div class="function-btn" onclick="showPage('dataMaintenance')">
+                            <span class="icon">🔧</span>
+                            <span class="text">数据维护</span>
+                        </div>
+                        <div class="function-btn" onclick="showPage('dataStats')">
+                            <span class="icon">📈</span>
+                            <span class="text">数据统计</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- OCR识别结果页面 -->
-        <div id="ocr-result" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('task-startup')">← 返回</button>
-                <h1>OCR识别结果</h1>
-                <p>确认并编辑字段信息</p>
+        <!-- 启动任务页面 -->
+        <div id="taskStart" class="function-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h2 class="page-title">启动任务</h2>
             </div>
-            <div class="mobile-content">
-                <!-- 识别进度 -->
-                <div id="ocr-progress" class="mobile-card">
-                    <div class="mobile-card-content">
-                        <div class="progress-container">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progress-fill"></div>
-                            </div>
-                            <div class="progress-text" id="progress-text">正在识别表格字段...</div>
-                        </div>
-                    </div>
+
+            <!-- 文件上传区域 -->
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">点击上传表格文件</div>
+                <div class="upload-hint">支持 Excel、Word、图片格式</div>
+                <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.doc,.docx,.jpg,.jpeg,.png" onchange="handleFileUpload(event)">
+            </div>
+
+            <!-- 建表选项 -->
+            <div class="build-options">
+                <h3 class="option-title">选择建表方式</h3>
+                
+                <div class="option-btn" onclick="selectBuildOption('template')">
+                    <h4>📋 使用表格模板</h4>
+                    <p>从已保存的模板库中选择，快速创建表格</p>
                 </div>
 
-                <!-- 识别结果 -->
-                <div id="ocr-fields" class="hidden">
-                    <div class="mobile-card">
-                        <div class="mobile-card-header">
-                            <h2>🔍 识别到 <span id="field-count">5</span> 个字段</h2>
-                            <button class="mobile-btn-secondary" onclick="addCustomField()" style="padding: 6px 12px; font-size: 12px;">+ 新增字段</button>
-                        </div>
-                        <div class="mobile-card-content">
-                            <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 16px;">请确认识别结果，可以修改字段名称或设置校验规则</p>
-                        </div>
-                    </div>
+                <div class="option-btn" onclick="selectBuildOption('ocr')">
+                    <h4>📷 OCR识别建表</h4>
+                    <p>通过拍照或上传文件，自动识别生成表格</p>
+                </div>
 
-                    <!-- 字段列表 -->
-                    <div id="field-list">
-                        <!-- 字段项会动态生成 -->
-                    </div>
-
-                    <!-- 操作按钮 -->
-                    <div class="action-buttons">
-                        <button class="mobile-btn mobile-btn-secondary" onclick="saveAsDraft()">
-                            💾 保存草稿
-                        </button>
-                        <button class="mobile-btn mobile-btn-primary" onclick="generateForm()">
-                            ✅ 生成表单
-                        </button>
-                    </div>
+                <div class="option-btn" onclick="selectBuildOption('manual')">
+                    <h4>✏️ 手动创建表格</h4>
+                    <p>使用可视化工具，拖拽组件创建自定义表格</p>
                 </div>
             </div>
-        </div>
 
-        <!-- 字段编辑弹窗 -->
-        <div id="field-edit-modal" class="modal hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>编辑字段</h3>
-                    <button class="modal-close" onclick="closeFieldModal()">×</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label class="form-label">字段名称</label>
-                        <input type="text" id="edit-field-name" class="form-select" placeholder="请输入字段名称">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">字段类型</label>
-                        <select id="edit-field-type" class="form-select">
-                            <option value="text">文本</option>
-                            <option value="number">数字</option>
-                            <option value="phone">手机号</option>
-                            <option value="idcard">身份证</option>
-                            <option value="email">邮箱</option>
-                            <option value="date">日期</option>
-                            <option value="select">下拉选择</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">是否必填</label>
-                        <div class="switch-container">
-                            <input type="checkbox" id="edit-field-required" class="switch">
-                            <label for="edit-field-required" class="switch-label"></label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="select-options-group" style="display: none;">
-                        <label class="form-label">选项设置</label>
-                        <textarea id="edit-field-options" class="form-textarea" placeholder="每行一个选项，例如：&#10;选项1&#10;选项2&#10;选项3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">校验规则</label>
-                        <textarea id="edit-field-validation" class="form-textarea" placeholder="例如：最小长度2位，最大长度50位"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="mobile-btn mobile-btn-secondary" onclick="closeFieldModal()">取消</button>
-                    <button class="mobile-btn mobile-btn-primary" onclick="saveFieldEdit()">保存</button>
-                </div>
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="goBack()">取消</button>
+                <button class="action-btn primary" onclick="startTask()">开始任务</button>
             </div>
         </div>
 
         <!-- 数据采集页面 -->
-        <div id="data-collection" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('committee-main')">← 返回</button>
-                <h1>数据采集</h1>
-                <p>多渠道任务执行</p>
+        <div id="dataCollection" class="function-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h2 class="page-title">数据采集</h2>
             </div>
-            <div class="mobile-content">
-                <div class="mobile-tabs">
-                    <div class="mobile-tab active" onclick="switchCollectionTab('notification')">线上通知</div>
-                    <div class="mobile-tab" onclick="switchCollectionTab('form')">填报界面</div>
-                    <div class="mobile-tab" onclick="switchCollectionTab('offline')">线下代填</div>
-                    <div class="mobile-tab" onclick="switchCollectionTab('kanban')">任务看板</div>
+
+            <!-- 任务看板 -->
+            <div class="task-dashboard">
+                <div class="dashboard-header">
+                    <div class="task-title">季度低保户统计</div>
+                    <div class="task-status">进行中</div>
                 </div>
 
-                <!-- 线上通知 -->
-                <div id="notification-tab" class="mobile-tab-content active">
-                    <div class="notification-form">
-                        <div class="form-section">
-                            <h2 class="section-title">发送通知</h2>
-                            <p class="section-subtitle">向村民发送填报通知</p>
-                        </div>
-
-                        <div class="form-section">
-                            <label class="form-label">通知对象</label>
-                            <div class="select-wrapper">
-                                <select class="form-select" id="notification-target">
-                                    <option value="">选择通知范围</option>
-                                    <option value="all">全体村民</option>
-                                    <option value="group1">第1组</option>
-                                    <option value="group2">第2组</option>
-                                    <option value="incomplete">未完成村民</option>
-                                    <option value="custom">自定义选择</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-section">
-                            <label class="form-label">通知内容</label>
-                            <textarea class="form-textarea" id="notification-content" rows="4" placeholder="请各位村民及时完成2024年度人口普查信息填报，截止日期为12月31日...">请各位村民及时完成2024年度人口普查信息填报，截止日期为12月31日...</textarea>
-                        </div>
-
-                        <button class="send-notification-btn" onclick="sendNotification()">
-                            <span class="btn-icon">✈️</span>
-                            <span class="btn-text">发送通知</span>
-                        </button>
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>完成进度</span>
+                        <span>15/25 (60%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%"></div>
                     </div>
                 </div>
 
-                <!-- 填报界面 -->
-                <div id="form-tab" class="mobile-tab-content">
-                    <div class="mobile-card">
-                        <div class="mobile-card-header">
-                            <h2>村民填报界面预览</h2>
-                        </div>
-                        <div class="mobile-card-content">
-                            <div class="form-group">
-                                <label class="form-label">姓名</label>
-                                <input type="text" class="form-select" value="张三" readonly style="background: #f8f9fa;">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">身份证号</label>
-                                <input type="text" class="form-select" value="320***********1234" readonly style="background: #f8f9fa;">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">联系电话</label>
-                                <input type="text" class="form-select" placeholder="请输入联系电话">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">职业</label>
-                                <input type="text" class="form-select" placeholder="请输入职业">
-                            </div>
-                        </div>
+                <div class="action-buttons">
+                    <button class="action-btn secondary" onclick="sendNotification()">📱 发送通知</button>
+                    <button class="action-btn primary" onclick="batchRemind()">🔔 批量催办</button>
+                </div>
+            </div>
+
+            <!-- 村民列表 -->
+            <div class="villager-list">
+                <div class="list-header">村民填报状态</div>
+                
+                <div class="villager-item">
+                    <div class="villager-info">
+                        <div class="villager-name">张三</div>
+                        <div class="villager-details">身份证: 430***********1234</div>
                     </div>
-                    <button class="mobile-btn mobile-btn-secondary" onclick="configureForm()">
-                        ⚙️ 表单设置
-                    </button>
+                    <div class="status-badge completed">已完成</div>
                 </div>
 
-                <!-- 线下代填 -->
-                <div id="offline-tab" class="mobile-tab-content">
-                    <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="搜索村民姓名...">
-                        <button class="add-btn" onclick="searchVillager()">搜索</button>
+                <div class="villager-item">
+                    <div class="villager-info">
+                        <div class="villager-name">李四</div>
+                        <div class="villager-details">身份证: 430***********5678</div>
                     </div>
-                    
-                    <div class="villager-card" onclick="fillForVillager('张三')">
-                        <div class="villager-header">
-                            <span class="villager-name-large">张三</span>
-                            <span class="status-badge status-pending">待填报</span>
-                        </div>
-                        <div class="villager-info">
-                            身份证：320***********1234<br>
-                            电话：138****1234
-                        </div>
-                    </div>
-                    
-                    <div class="villager-card" onclick="fillForVillager('李四')">
-                        <div class="villager-header">
-                            <span class="villager-name-large">李四</span>
-                            <span class="status-badge status-pending">待填报</span>
-                        </div>
-                        <div class="villager-info">
-                            身份证：320***********1234<br>
-                            电话：139****5678
-                        </div>
+                    <div class="status-badge pending">待填报</div>
+                    <div class="villager-actions">
+                        <button class="mini-btn fill" onclick="fillForVillager('李四')">代填</button>
+                        <button class="mini-btn remind" onclick="remindVillager('李四')">催办</button>
                     </div>
                 </div>
 
-                <!-- 任务看板 -->
-                <div id="kanban-tab" class="mobile-tab-content">
-                    <!-- 任务状态概览 -->
-                    <div class="task-overview">
-                        <div class="task-status">
-                            <div class="status-icon">📊</div>
-                            <div class="status-info">
-                                <div class="status-title">2025年度人口普查</div>
-                                <div class="status-subtitle">数据采集进行中</div>
-                            </div>
-                            <div class="status-badge active">进行中</div>
-                        </div>
-                        
-                        <!-- 进度条 -->
-                        <div class="progress-section">
-                            <div class="progress-header">
-                                <span class="progress-label">完成进度</span>
-                                <span class="progress-percentage">85%</span>
-                            </div>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 85%"></div>
-                                </div>
-                            </div>
-                            <div class="progress-stats">
-                                <div class="stat-item">
-                                    <span class="stat-number">85</span>
-                                    <span class="stat-label">已完成</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-number">15</span>
-                                    <span class="stat-label">未完成</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-number">100</span>
-                                    <span class="stat-label">总计</span>
-                                </div>
-                            </div>
-                        </div>
+                <div class="villager-item">
+                    <div class="villager-info">
+                        <div class="villager-name">王五</div>
+                        <div class="villager-details">身份证: 430***********9012</div>
                     </div>
-
-                    <!-- 视图切换 -->
-                    <div class="view-switcher">
-                        <button class="view-btn active" onclick="switchKanbanView('incomplete')">
-                            未完成 (15)
-                        </button>
-                        <button class="view-btn" onclick="switchKanbanView('completed')">
-                            已完成 (85)
-                        </button>
-                    </div>
-
-                    <!-- 未完成任务列表 -->
-                    <div id="incomplete-view" class="kanban-view active">
-                        <div class="villager-list">
-                            <div class="villager-card">
-                                <div class="villager-header">
-                                    <div class="villager-info">
-                                        <div class="villager-name">张三</div>
-                                        <div class="villager-details">320***1234 | 第1组</div>
-                                    </div>
-                                    <div class="villager-status pending">待填报</div>
-                                </div>
-                                <div class="villager-actions">
-                                    <button class="action-btn remind-btn" onclick="remindVillager('张三')">
-                                        📢 提醒
-                                    </button>
-                                    <button class="action-btn fill-btn" onclick="fillForVillager('张三')">
-                                        ✏️ 代填
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="villager-card">
-                                <div class="villager-header">
-                                    <div class="villager-info">
-                                        <div class="villager-name">李四</div>
-                                        <div class="villager-details">320***5678 | 第1组</div>
-                                    </div>
-                                    <div class="villager-status pending">待填报</div>
-                                </div>
-                                <div class="villager-actions">
-                                    <button class="action-btn remind-btn" onclick="remindVillager('李四')">
-                                        📢 提醒
-                                    </button>
-                                    <button class="action-btn fill-btn" onclick="fillForVillager('李四')">
-                                        ✏️ 代填
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="villager-card">
-                                <div class="villager-header">
-                                    <div class="villager-info">
-                                        <div class="villager-name">王五</div>
-                                        <div class="villager-details">320***9012 | 第2组</div>
-                                    </div>
-                                    <div class="villager-status pending">待填报</div>
-                                </div>
-                                <div class="villager-actions">
-                                    <button class="action-btn remind-btn" onclick="remindVillager('王五')">
-                                        📢 提醒
-                                    </button>
-                                    <button class="action-btn fill-btn" onclick="fillForVillager('王五')">
-                                        ✏️ 代填
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 批量操作 -->
-                        <div class="batch-actions">
-                            <button class="mobile-btn mobile-btn-primary" onclick="batchRemind()">
-                                📢 批量催办
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 已完成任务列表 -->
-                    <div id="completed-view" class="kanban-view">
-                        <div class="villager-list">
-                            <div class="villager-card completed">
-                                <div class="villager-header">
-                                    <div class="villager-info">
-                                        <div class="villager-name">赵六</div>
-                                        <div class="villager-details">320***1111 | 第1组</div>
-                                    </div>
-                                    <div class="villager-status completed">已完成</div>
-                                </div>
-                                <div class="completion-info">
-                                    <span class="completion-time">完成时间：2024-12-01 14:20</span>
-                                </div>
-                            </div>
-                            
-                            <div class="villager-card completed">
-                                <div class="villager-header">
-                                    <div class="villager-info">
-                                        <div class="villager-name">孙七</div>
-                                        <div class="villager-details">320***2222 | 第2组</div>
-                                    </div>
-                                    <div class="villager-status completed">已完成</div>
-                                </div>
-                                <div class="completion-info">
-                                    <span class="completion-time">完成时间：2024-12-01 13:45</span>
-                                </div>
-                            </div>
-                            
-                            <div class="villager-card completed">
-                                <div class="villager-header">
-                                    <div class="villager-info">
-                                        <div class="villager-name">周八</div>
-                                        <div class="villager-details">320***3333 | 第1组</div>
-                                    </div>
-                                    <div class="villager-status completed">已完成</div>
-                                </div>
-                                <div class="completion-info">
-                                    <span class="completion-time">完成时间：2024-12-01 12:30</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="status-badge pending">待填报</div>
+                    <div class="villager-actions">
+                        <button class="mini-btn fill" onclick="fillForVillager('王五')">代填</button>
+                        <button class="mini-btn remind" onclick="remindVillager('王五')">催办</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 数据审核与导出页面 -->
-        <div id="data-review" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('committee-main')">← 返回</button>
-                <h1>数据审核与导出</h1>
-                <p>一键生成可提交文件</p>
-            </div>
-            <div class="mobile-content">
-                <div class="mobile-table">
-                    <div class="table-header">
-                        <div class="table-title">数据总览</div>
-                        <div class="selected-count" id="selected-count">已选择 0 项</div>
-                    </div>
-                    
-                    <div class="table-row">
-                        <div class="row-header">
-                            <span class="row-name">张三</span>
-                            <input type="checkbox" class="row-checkbox" onchange="updateSelection()">
-                        </div>
-                        <div class="row-info">
-                            身份证：320***********1234<br>
-                            电话：138****1234 | 职业：农民
-                        </div>
-                        <div class="row-actions">
-                            <span class="status-badge status-approved">已审核</span>
-                            <button class="action-btn-small action-btn-primary" onclick="approveRow(this)" disabled>审核</button>
-                            <button class="action-btn-small action-btn-secondary" onclick="rejectRow(this)" disabled>驳回</button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-row">
-                        <div class="row-header">
-                            <span class="row-name">李四</span>
-                            <input type="checkbox" class="row-checkbox" onchange="updateSelection()">
-                        </div>
-                        <div class="row-info">
-                            身份证：320***********1234<br>
-                            电话：139****5678 | 职业：农民
-                        </div>
-                        <div class="row-actions">
-                            <span class="status-badge status-pending">待审核</span>
-                            <button class="action-btn-small action-btn-primary" onclick="approveRow(this)">审核</button>
-                            <button class="action-btn-small action-btn-secondary" onclick="rejectRow(this)">驳回</button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-row">
-                        <div class="row-header">
-                            <span class="row-name">王五</span>
-                            <input type="checkbox" class="row-checkbox" onchange="updateSelection()">
-                        </div>
-                        <div class="row-info">
-                            身份证：320***********1234<br>
-                            电话：137****9012 | 职业：农民
-                        </div>
-                        <div class="row-actions">
-                            <span class="status-badge status-pending">待审核</span>
-                            <button class="action-btn-small action-btn-primary" onclick="approveRow(this)">审核</button>
-                            <button class="action-btn-small action-btn-secondary" onclick="rejectRow(this)">驳回</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 导出配置 -->
-                <div class="mobile-card" style="margin-top: 16px;">
-                    <div class="mobile-card-header">
-                        <h2>导出配置</h2>
-                    </div>
-                    <div class="mobile-card-content">
-                        <div class="form-group">
-                            <label class="form-label">文件名称</label>
-                            <input type="text" class="form-select" value="2024年度人口普查数据">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">导出格式</label>
-                            <select class="form-select">
-                                <option>Excel (.xlsx)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">导出范围</label>
-                            <select class="form-select">
-                                <option>全部数据</option>
-                                <option>仅已审核</option>
-                                <option>仅待审核</option>
-                            </select>
-                        </div>
-                        <button class="mobile-btn mobile-btn-primary" onclick="exportData()">
-                            📥 导出Excel
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 便捷提交 -->
-                <div class="mobile-card">
-                    <div class="mobile-card-header">
-                        <h2>便捷提交</h2>
-                    </div>
-                    <div class="mobile-card-content">
-                        <button class="mobile-btn mobile-btn-secondary" onclick="shareToWechat()">
-                            💬 分享到微信
-                        </button>
-                        <button class="mobile-btn mobile-btn-secondary" onclick="saveToPhone()">
-                            📱 保存到手机
-                        </button>
-                    </div>
-                </div>
+        <!-- 数据审核导出页面 -->
+        <div id="dataReview" class="function-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h2 class="page-title">数据审核导出</h2>
             </div>
 
-            <!-- 批量操作栏 -->
-            <div id="batch-actions" class="batch-actions">
-                <div style="display: flex; gap: 8px;">
-                    <button class="batch-btn batch-approve" onclick="batchApprove()">批量审核</button>
-                    <button class="batch-btn batch-reject" onclick="batchReject()">批量驳回</button>
+            <div class="task-dashboard">
+                <div class="dashboard-header">
+                    <div class="task-title">季度低保户统计</div>
+                    <div class="task-status">待审核</div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>数据完整性</span>
+                        <span>25/25 (100%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div style="margin: 20px 0; padding: 16px; background: #f8f9fa; border-radius: 8px;">
+                    <h4 style="margin-bottom: 12px; color: #333;">数据概览</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 14px;">
+                        <div>总户数: 25户</div>
+                        <div>低保户: 8户</div>
+                        <div>五保户: 3户</div>
+                        <div>一般户: 14户</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn secondary" onclick="previewData()">👁️ 预览数据</button>
+                    <button class="action-btn primary" onclick="exportData()">📤 导出Excel</button>
                 </div>
             </div>
         </div>
 
         <!-- 数据沉淀页面 -->
-        <div id="data-deposit" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('committee-main')">← 返回</button>
-                <h1>数据沉淀：更新数据</h1>
-                <p>数据冲突处理</p>
+        <div id="dataDeposit" class="function-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h2 class="page-title">数据沉淀</h2>
             </div>
-            <div class="mobile-content">
-                <div class="mobile-card">
-                    <div class="mobile-card-header">
-                        <h2>数据冲突处理</h2>
-                        <span class="status-badge status-rejected" style="background: #ff4757;">2 待处理</span>
+
+            <div class="data-management">
+                <h3 style="margin-bottom: 16px; color: #333;">数据更新确认</h3>
+                
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                    <h4 style="color: #856404; margin-bottom: 8px;">⚠️ 发现数据冲突</h4>
+                    <p style="color: #856404; font-size: 14px; margin: 0;">系统检测到3条数据与村大表不一致，需要您确认更新。</p>
+                </div>
+
+                <div class="villager-list">
+                    <div class="list-header">冲突数据列表</div>
+                    
+                    <div class="villager-item">
+                        <div class="villager-info">
+                            <div class="villager-name">张三 - 联系电话</div>
+                            <div class="villager-details">
+                                <div style="color: #dc3545;">原: 138****1234</div>
+                                <div style="color: #28a745;">新: 139****5678</div>
+                            </div>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="mini-btn" style="background: #28a745; color: white;" onclick="confirmUpdate('张三', 'phone')">确认更新</button>
+                        </div>
                     </div>
-                    <div class="mobile-card-content">
-                        <p style="text-align: center; color: #7f8c8d; margin-bottom: 20px;">需要人工审核的数据冲突</p>
+
+                    <div class="villager-item">
+                        <div class="villager-info">
+                            <div class="villager-name">李四 - 家庭住址</div>
+                            <div class="villager-details">
+                                <div style="color: #dc3545;">原: 村东组15号</div>
+                                <div style="color: #28a745;">新: 村西组8号</div>
+                            </div>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="mini-btn" style="background: #28a745; color: white;" onclick="confirmUpdate('李四', 'address')">确认更新</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 冲突项1 -->
-                <div class="conflict-card">
-                    <div class="conflict-header-item">
-                        <h4>张三</h4>
-                        <span class="conflict-type">电话变更</span>
-                    </div>
-                    <div class="conflict-field">字段：电话号码</div>
-                    <div class="conflict-comparison">
-                        <div class="value-box old-value">
-                            <div class="value-label">原值</div>
-                            <div class="value-content">138****1234</div>
-                        </div>
-                        <div class="value-box new-value">
-                            <div class="value-label">新值</div>
-                            <div class="value-content">138****5678</div>
-                        </div>
-                    </div>
-                    <div class="conflict-actions">
-                        <button class="action-btn" onclick="resolveConflict(this, 'accept')">采纳新值</button>
-                        <button class="action-btn secondary" onclick="resolveConflict(this, 'keep')">保留旧值</button>
-                        <button class="action-btn secondary" onclick="resolveConflict(this, 'manual')">手动修改</button>
-                    </div>
+                <div class="action-buttons" style="margin-top: 20px;">
+                    <button class="action-btn secondary" onclick="skipUpdate()">跳过更新</button>
+                    <button class="action-btn primary" onclick="batchUpdate()">批量确认</button>
                 </div>
-
-                <!-- 冲突项2 -->
-                <div class="conflict-card">
-                    <div class="conflict-header-item">
-                        <h4>李四</h4>
-                        <span class="conflict-type">地址变更</span>
-                    </div>
-                    <div class="conflict-field">字段：家庭住址</div>
-                    <div class="conflict-comparison">
-                        <div class="value-box old-value">
-                            <div class="value-label">原值</div>
-                            <div class="value-content">村东路123号</div>
-                        </div>
-                        <div class="value-box new-value">
-                            <div class="value-label">新值</div>
-                            <div class="value-content">村东路125号</div>
-                        </div>
-                    </div>
-                    <div class="conflict-actions">
-                        <button class="action-btn" onclick="resolveConflict(this, 'accept')">采纳新值</button>
-                        <button class="action-btn secondary" onclick="resolveConflict(this, 'keep')">保留旧值</button>
-                        <button class="action-btn secondary" onclick="resolveConflict(this, 'manual')">手动修改</button>
-                    </div>
-                </div>
-
-                <button class="mobile-btn mobile-btn-primary" onclick="showPage('data-maintenance')">
-                    ✅ 处理完成，查看村大表
-                </button>
             </div>
         </div>
 
         <!-- 数据维护页面 -->
-        <div id="data-maintenance" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('committee-main')">← 返回</button>
-                <h1>数据维护</h1>
-                <p>常态化数据维护</p>
+        <div id="dataMaintenance" class="function-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h2 class="page-title">数据维护</h2>
             </div>
-            <div class="mobile-content">
-                <!-- 模块选择 -->
-                <div class="module-tabs">
-                    <div class="module-tab active" onclick="switchMaintenanceModule('household')">
-                        <div class="module-icon">👥</div>
-                        <div class="module-title">村民户籍档案</div>
-                        <div class="module-desc">管理村民基本信息</div>
-                    </div>
-                    <div class="module-tab" onclick="switchMaintenanceModule('task')">
-                        <div class="module-icon">📊</div>
-                        <div class="module-title">任务工作数据</div>
-                        <div class="module-desc">管理任务执行数据</div>
-                    </div>
+
+            <div class="data-management">
+                <!-- 搜索栏 -->
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="搜索村民姓名、身份证号..." onkeyup="searchVillagers(this.value)">
                 </div>
 
-                <!-- 村民户籍档案模块 -->
-                <div id="household-module" class="maintenance-module active">
-                    <div class="module-header">
-                        <h2>村民户籍档案</h2>
-                        <p>管理村民基本信息和户籍资料</p>
-                    </div>
+                <!-- 筛选器 -->
+                <div class="data-filters">
+                    <button class="filter-btn active" onclick="filterData('all')">全部</button>
+                    <button class="filter-btn" onclick="filterData('lowIncome')">低保户</button>
+                    <button class="filter-btn" onclick="filterData('fiveGuarantee')">五保户</button>
+                    <button class="filter-btn" onclick="filterData('general')">一般户</button>
+                </div>
+
+                <!-- 村民数据列表 -->
+                <div class="villager-list">
+                    <div class="list-header">村民信息管理</div>
                     
-                    <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="搜索村民...">
-                        <button class="add-btn" onclick="addVillager()">👤 新增</button>
-                    </div>
-
-                    <div class="villager-card">
-                        <div class="villager-header">
-                            <span class="villager-name-large">张三</span>
-                            <div class="villager-actions">
-                                <button class="icon-btn icon-btn-view" onclick="viewVillager('张三')">👁</button>
-                                <button class="icon-btn icon-btn-edit" onclick="editVillager('张三')">✏️</button>
-                            </div>
-                        </div>
+                    <div class="villager-item">
                         <div class="villager-info">
-                            身份证：320***********1234<br>
-                            电话：138****1234 | 组别：第一组<br>
-                            最后更新：2024-12-01
+                            <div class="villager-name">张三</div>
+                            <div class="villager-details">低保户 | 138****1234 | 村东组15号</div>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="mini-btn" style="background: #667eea; color: white;" onclick="editVillager('张三')">编辑</button>
                         </div>
                     </div>
 
-                    <div class="villager-card">
-                        <div class="villager-header">
-                            <span class="villager-name-large">李四</span>
-                            <div class="villager-actions">
-                                <button class="icon-btn icon-btn-view" onclick="viewVillager('李四')">👁</button>
-                                <button class="icon-btn icon-btn-edit" onclick="editVillager('李四')">✏️</button>
-                            </div>
-                        </div>
+                    <div class="villager-item">
                         <div class="villager-info">
-                            身份证：320***********1234<br>
-                            电话：139****5678 | 组别：第一组<br>
-                            最后更新：2024-12-01
+                            <div class="villager-name">李四</div>
+                            <div class="villager-details">一般户 | 139****5678 | 村西组8号</div>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="mini-btn" style="background: #667eea; color: white;" onclick="editVillager('李四')">编辑</button>
                         </div>
                     </div>
 
-                    <div class="villager-card">
-                        <div class="villager-header">
-                            <span class="villager-name-large">王五</span>
-                            <div class="villager-actions">
-                                <button class="icon-btn icon-btn-view" onclick="viewVillager('王五')">👁</button>
-                                <button class="icon-btn icon-btn-edit" onclick="editVillager('王五')">✏️</button>
-                            </div>
-                        </div>
+                    <div class="villager-item">
                         <div class="villager-info">
-                            身份证：320***********1234<br>
-                            电话：137****9012 | 组别：第一组<br>
-                            最后更新：2024-12-01
+                            <div class="villager-name">王五</div>
+                            <div class="villager-details">五保户 | 137****9012 | 村南组3号</div>
                         </div>
-                    </div>
-
-                    <div class="villager-card">
-                        <div class="villager-header">
-                            <span class="villager-name-large">赵六</span>
-                            <div class="villager-actions">
-                                <button class="icon-btn icon-btn-view" onclick="viewVillager('赵六')">👁</button>
-                                <button class="icon-btn icon-btn-edit" onclick="editVillager('赵六')">✏️</button>
-                            </div>
-                        </div>
-                        <div class="villager-info">
-                            身份证：320***********1234<br>
-                            电话：136****3456 | 组别：第一组<br>
-                            最后更新：2024-12-01
+                        <div class="villager-actions">
+                            <button class="mini-btn" style="background: #667eea; color: white;" onclick="editVillager('王五')">编辑</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 任务工作数据模块 -->
-                <div id="task-module" class="maintenance-module">
-                    <div class="module-header">
-                        <h2>任务工作数据</h2>
-                        <p>管理各项任务的执行数据和统计信息</p>
-                    </div>
-                    
-                    <div class="task-stats">
-                        <div class="stat-card">
-                            <div class="stat-icon">📋</div>
-                            <div class="stat-info">
-                                <div class="stat-number">12</div>
-                                <div class="stat-label">进行中任务</div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">✅</div>
-                            <div class="stat-info">
-                                <div class="stat-number">45</div>
-                                <div class="stat-label">已完成任务</div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📊</div>
-                            <div class="stat-info">
-                                <div class="stat-number">89%</div>
-                                <div class="stat-label">平均完成率</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-list">
-                        <div class="task-item">
-                            <div class="task-header">
-                                <div class="task-title">2025年度人口普查</div>
-                                <div class="task-status status-active">进行中</div>
-                            </div>
-                            <div class="task-info">
-                                创建时间：2024-12-01<br>
-                                完成进度：85/100 (85%)<br>
-                                负责人：村委会
-                            </div>
-                            <div class="task-actions">
-                                <button class="action-btn-small action-btn-primary" onclick="viewTaskData('census2025')">查看数据</button>
-                                <button class="action-btn-small action-btn-secondary" onclick="exportTaskData('census2025')">导出</button>
-                            </div>
-                        </div>
-
-                        <div class="task-item">
-                            <div class="task-header">
-                                <div class="task-title">低保户统计调查</div>
-                                <div class="task-status status-completed">已完成</div>
-                            </div>
-                            <div class="task-info">
-                                创建时间：2024-11-15<br>
-                                完成进度：28/28 (100%)<br>
-                                负责人：民政委员
-                            </div>
-                            <div class="task-actions">
-                                <button class="action-btn-small action-btn-primary" onclick="viewTaskData('subsidy2024')">查看数据</button>
-                                <button class="action-btn-small action-btn-secondary" onclick="exportTaskData('subsidy2024')">导出</button>
-                            </div>
-                        </div>
-
-                        <div class="task-item">
-                            <div class="task-header">
-                                <div class="task-title">农业补贴申报</div>
-                                <div class="task-status status-completed">已完成</div>
-                            </div>
-                            <div class="task-info">
-                                创建时间：2024-10-20<br>
-                                完成进度：67/67 (100%)<br>
-                                负责人：经济委员
-                            </div>
-                            <div class="task-actions">
-                                <button class="action-btn-small action-btn-primary" onclick="viewTaskData('agriculture2024')">查看数据</button>
-                                <button class="action-btn-small action-btn-secondary" onclick="exportTaskData('agriculture2024')">导出</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="action-buttons" style="margin-top: 20px;">
+                    <button class="action-btn secondary" onclick="exportVillagerData()">📤 导出数据</button>
+                    <button class="action-btn primary" onclick="addNewVillager()">➕ 新增村民</button>
                 </div>
             </div>
         </div>
 
-        <!-- 代填表单页面 -->
-        <div id="proxy-fill-form" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('data-collection')">← 返回</button>
-                <h1>代填表单</h1>
-                <p id="proxy-villager-name">为 张三 代填表单</p>
+        <!-- 数据统计页面 -->
+        <div id="dataStats" class="function-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h2 class="page-title">数据统计</h2>
             </div>
-            <div class="mobile-content">
-                <div class="mobile-card">
-                    <div class="mobile-card-header">
-                        <h2>📋 村民信息表</h2>
-                        <div style="font-size: 12px; color: #7f8c8d;">代填人：村干部 | 时间：2024-12-01 15:30</div>
-                    </div>
-                    <div class="mobile-card-content">
-                        <div class="form-group">
-                            <label class="form-label">姓名 <span style="color: #e74c3c;">*</span></label>
-                            <input type="text" class="form-select" id="proxy-name" value="张三" readonly style="background: #f8f9fa;">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">身份证号 <span style="color: #e74c3c;">*</span></label>
-                            <input type="text" class="form-select" id="proxy-idcard" value="320***********1234" readonly style="background: #f8f9fa;">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">联系电话 <span style="color: #e74c3c;">*</span></label>
-                            <input type="text" class="form-select" id="proxy-phone" placeholder="请输入联系电话">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">家庭住址</label>
-                            <input type="text" class="form-select" id="proxy-address" placeholder="请输入家庭住址">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">职业</label>
-                            <select class="form-select" id="proxy-job">
-                                <option value="">请选择职业</option>
-                                <option value="农民">农民</option>
-                                <option value="工人">工人</option>
-                                <option value="教师">教师</option>
-                                <option value="医生">医生</option>
-                                <option value="其他">其他</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">代填说明</label>
-                            <textarea class="form-textarea" id="proxy-note" placeholder="请说明代填原因和情况，如：村民外出务工无法自行填报，已电话确认相关信息..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="mobile-btn mobile-btn-secondary" onclick="saveDraft()">💾 保存草稿</button>
-                    <button class="mobile-btn mobile-btn-primary" onclick="submitProxyForm()">✅ 提交表单</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- 村民填报页面 -->
-        <div id="villager-fill-form" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('villager-main')">← 返回</button>
-                <h1>信息填报</h1>
-                <p>请完善您的个人信息</p>
-            </div>
-            <div class="mobile-content">
-                <div class="mobile-card">
-                    <div class="mobile-card-header">
-                        <h2>📋 村民信息表</h2>
-                        <div style="font-size: 12px; color: #7f8c8d;">填报时间：2024-12-01 15:30</div>
+            <div class="data-management">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold; margin-bottom: 8px;">125</div>
+                        <div style="font-size: 14px; opacity: 0.9;">总户数</div>
                     </div>
-                    <div class="mobile-card-content">
-                        <div class="form-group">
-                            <label class="form-label">姓名 <span style="color: #e74c3c;">*</span></label>
-                            <input type="text" class="form-select" id="villager-name" value="张三" readonly style="background: #f8f9fa;">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">身份证号 <span style="color: #e74c3c;">*</span></label>
-                            <input type="text" class="form-select" id="villager-idcard" value="320***********1234" readonly style="background: #f8f9fa;">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">联系电话 <span style="color: #e74c3c;">*</span></label>
-                            <input type="text" class="form-select" id="villager-phone" placeholder="请输入联系电话">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">家庭住址</label>
-                            <input type="text" class="form-select" id="villager-address" placeholder="请输入家庭住址">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">职业</label>
-                            <select class="form-select" id="villager-job">
-                                <option value="">请选择职业</option>
-                                <option value="农民">农民</option>
-                                <option value="工人">工人</option>
-                                <option value="教师">教师</option>
-                                <option value="医生">医生</option>
-                                <option value="其他">其他</option>
-                            </select>
-                        </div>
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold; margin-bottom: 8px;">387</div>
+                        <div style="font-size: 14px; opacity: 0.9;">总人数</div>
                     </div>
                 </div>
-                <div class="action-buttons">
-                    <button class="mobile-btn mobile-btn-secondary" onclick="saveDraft()">💾 保存草稿</button>
-                    <button class="mobile-btn mobile-btn-primary" onclick="submitVillagerForm()">✅ 提交表单</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- 村民视角页面 -->
-        <div id="villager-main" class="page">
-            <div class="mobile-header">
-                <button class="back-btn" onclick="showPage('role-selection')">← 返回</button>
-                <h1>村民服务</h1>
-                <p>便民信息填报</p>
-            </div>
-            <div class="mobile-content">
-                <div class="mobile-card">
-                    <div class="mobile-card-header">
-                        <h2>📋 待填报任务</h2>
-                    </div>
-                    <div class="mobile-card-content">
-                        <div style="padding: 20px 0; text-align: center;">
-                            <h4 style="margin-bottom: 8px;">2024年度人口普查</h4>
-                            <p style="color: #7f8c8d; margin-bottom: 16px;">请及时完成信息填报</p>
-                            <button class="mobile-btn mobile-btn-primary" onclick="fillForm()">
-                                📝 开始填报
-                            </button>
+                <div class="section-card">
+                    <h3 style="margin-bottom: 16px; color: #333;">户型分布</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <span>低保户</span>
+                            <span style="font-weight: bold; color: #dc3545;">28户</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <span>五保户</span>
+                            <span style="font-weight: bold; color: #fd7e14;">15户</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <span>一般户</span>
+                            <span style="font-weight: bold; color: #28a745;">82户</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="mobile-card">
-                    <div class="mobile-card-header">
-                        <h2>📜 历史记录</h2>
-                    </div>
-                    <div class="mobile-card-content">
-                        <div style="font-size: 14px; color: #7f8c8d; padding: 16px 0;">
-                            <div style="margin-bottom: 12px;">
-                                <strong>季度低保户统计</strong><br>
-                                <span style="color: #51cf66;">✓ 已完成</span> | 2024-11-15
-                            </div>
-                            <div>
-                                <strong>村民健康档案更新</strong><br>
-                                <span style="color: #51cf66;">✓ 已完成</span> | 2024-10-20
-                            </div>
-                        </div>
-                    </div>
+                <div class="action-buttons" style="margin-top: 20px;">
+                    <button class="action-btn secondary" onclick="generateReport()">📊 生成报表</button>
+                    <button class="action-btn primary" onclick="exportStats()">📤 导出统计</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 全局变量
-        let currentPage = 'role-selection';
-        let currentTab = 'upload';
-        let currentCollectionTab = 'kanban';
-
-        // 页面切换函数
-        function showPage(pageId) {
-            // 隐藏所有页面
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // 显示目标页面
-            document.getElementById(pageId).classList.add('active');
-            currentPage = pageId;
-        }
+        let currentPage = 'roleSelection';
+        let pageHistory = [];
 
         // 角色选择
         function selectRole(role) {
             if (role === 'committee') {
-                showPage('committee-main');
+                showPage('committeeMain');
             } else {
-                showPage('villager-main');
+                alert('村民功能正在开发中...');
             }
         }
 
-        // Tab切换
-        function switchTab(tabName) {
-            // 更新tab状态
-            document.querySelectorAll('.mobile-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
+        // 页面导航
+        function showPage(pageId) {
+            // 隐藏当前页面
+            const currentElement = document.getElementById(currentPage);
+            if (currentElement) {
+                currentElement.style.display = 'none';
+            }
 
-            // 切换内容
-            document.querySelectorAll('.mobile-tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(tabName + '-tab').classList.add('active');
-            
-            currentTab = tabName;
-        }
-
-        // 数据采集Tab切换
-        function switchCollectionTab(tabName) {
-            // 更新tab状态
-            document.querySelectorAll('#data-collection .mobile-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // 切换内容
-            document.querySelectorAll('#data-collection .mobile-tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(tabName + '-tab').classList.add('active');
-            
-            currentCollectionTab = tabName;
-        }
-
-        // 上传菜单显示/隐藏
-        function showUploadMenu() {
-            const menu = document.getElementById('upload-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        // 选择上传类型
-        function selectUploadType(type) {
-            const menu = document.getElementById('upload-menu');
-            menu.classList.add('hidden');
-            
-            if (type === 'local') {
-                showToast('正在打开文件选择器...');
+            // 显示新页面
+            const newElement = document.getElementById(pageId);
+            if (newElement) {
+                newElement.style.display = 'block';
+                newElement.classList.add('fade-in');
                 
-                // 模拟文件选择和上传过程
-                setTimeout(() => {
-                    // 模拟上传成功的概率（95%成功率）
-                    const uploadSuccess = Math.random() > 0.05;
-                    
-                    if (uploadSuccess) {
-                        showToast('文件上传成功！');
-                        // 上传成功后自动跳转到OCR识别结果页面
-                        setTimeout(() => {
-                            showOCRResults();
-                        }, 1000);
-                    } else {
-                        // 处理上传失败的情况
-                        showToast('文件上传失败，请检查文件格式或网络连接');
-                        console.error('本地文件上传失败');
-                    }
-                }, 1500);
-                
-            } else if (type === 'wechat') {
-                showToast('正在跳转微信...');
-                
-                // 模拟微信文件选择过程
-                setTimeout(() => {
-                    // 模拟从微信获取文件成功的概率（90%成功率）
-                    const wechatSuccess = Math.random() > 0.1;
-                    
-                    if (wechatSuccess) {
-                        showToast('从微信聊天记录中选择文件成功');
-                        // 上传成功后自动跳转到OCR识别结果页面
-                        setTimeout(() => {
-                            showOCRResults();
-                        }, 1000);
-                    } else {
-                        // 处理微信文件获取失败的情况
-                        showToast('微信文件获取失败，请重试或选择其他方式');
-                        console.error('微信文件获取失败');
-                    }
-                }, 1500);
+                // 添加到历史记录
+                if (currentPage !== pageId) {
+                    pageHistory.push(currentPage);
+                }
+                currentPage = pageId;
             }
         }
 
-        // 显示OCR识别结果页面（与手动识别功能保持一致）
-        function showOCRResults() {
-            try {
-                // 调用现有的OCR识别流程，与手动识别功能完全一致
-                simulateOCR();
-            } catch (error) {
-                // 处理异常情况
-                console.error('OCR识别过程出错:', error);
-                showToast('识别过程出现异常，请重试');
-                // 异常时返回任务启动页面
-                showPage('task-startup');
+        // 返回上一页
+        function goBack() {
+            if (pageHistory.length > 0) {
+                const previousPage = pageHistory.pop();
+                
+                // 隐藏当前页面
+                const currentElement = document.getElementById(currentPage);
+                if (currentElement) {
+                    currentElement.style.display = 'none';
+                }
+
+                // 显示上一页
+                const previousElement = document.getElementById(previousPage);
+                if (previousElement) {
+                    previousElement.style.display = 'block';
+                    previousElement.classList.add('slide-up');
+                }
+                
+                currentPage = previousPage;
             }
         }
 
-        // 开始拍照
-        function startCamera() {
-            showToast('正在启动相机...');
+        // 文件上传处理
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const uploadArea = document.querySelector('.upload-area');
+                uploadArea.innerHTML = `
+                    <div class="upload-icon">✅</div>
+                    <div class="upload-text">文件上传成功</div>
+                    <div class="upload-hint">${file.name}</div>
+                `;
+                uploadArea.style.borderColor = '#28a745';
+                uploadArea.style.background = '#d4edda';
+            }
         }
 
-        // 数据采集相关函数
-        function remindVillager(name) {
-            showToast(`已向${name}发送提醒`);
-        }
-
-        // 任务看板视图切换
-        function switchKanbanView(viewType) {
-            // 更新按钮状态
-            document.querySelectorAll('.view-btn').forEach(btn => {
+        // 建表选项选择
+        function selectBuildOption(option) {
+            // 移除所有active类
+            document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
-
-            // 切换视图内容
-            document.querySelectorAll('.kanban-view').forEach(view => {
-                view.classList.remove('active');
-            });
             
-            if (viewType === 'incomplete') {
-                document.getElementById('incomplete-view').classList.add('active');
-            } else if (viewType === 'completed') {
-                document.getElementById('completed-view').classList.add('active');
-            }
+            // 添加active类到选中的选项
+            event.target.closest('.option-btn').classList.add('active');
         }
 
-        // 发送通知功能
-        function sendNotification() {
-            const target = document.getElementById('notification-target').value;
-            const content = document.getElementById('notification-content').value;
-            
-            if (!target) {
-                showToast('请选择通知对象');
+        // 启动任务
+        function startTask() {
+            const activeOption = document.querySelector('.option-btn.active');
+            if (!activeOption) {
+                alert('请选择建表方式');
                 return;
             }
             
-            if (!content.trim()) {
-                showToast('请输入通知内容');
-                return;
-            }
+            // 模拟任务启动
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.innerHTML = '<div class="spinner"></div>正在创建任务...';
             
-            // 模拟发送通知
-            showToast('正在发送通知...');
+            document.querySelector('#taskStart').appendChild(loadingDiv);
+            
             setTimeout(() => {
-                showToast('通知发送成功！');
-                // 切换到任务看板查看结果
-                switchCollectionTab('kanban');
-            }, 1500);
+                loadingDiv.remove();
+                alert('任务创建成功！');
+                showPage('dataCollection');
+            }, 2000);
         }
 
-        // 数据维护模块切换
-        function switchMaintenanceModule(moduleType) {
-            // 更新tab状态
-            document.querySelectorAll('.module-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.closest('.module-tab').classList.add('active');
-
-            // 切换模块内容
-            document.querySelectorAll('.maintenance-module').forEach(module => {
-                module.classList.remove('active');
-            });
-            
-            if (moduleType === 'household') {
-                document.getElementById('household-module').classList.add('active');
-            } else if (moduleType === 'task') {
-                document.getElementById('task-module').classList.add('active');
-            }
+        // 发送通知
+        function sendNotification() {
+            alert('已向所有村民发送小程序通知');
         }
 
-        // 任务数据相关函数
-        function viewTaskData(taskId) {
-            showToast(`正在查看任务数据：${taskId}`);
-        }
-
-        function exportTaskData(taskId) {
-            showToast(`正在导出任务数据：${taskId}`);
-        }
-
-        function fillForVillager(name) {
-            showToast(`正在为${name}代填表单`);
-        }
-
+        // 批量催办
         function batchRemind() {
-            showToast('已向15位未完成村民发送催办通知');
+            alert('已向未完成填报的村民发送催办通知');
         }
 
-        function updateNotificationTarget() {
-            const target = document.getElementById('notification-target').value;
-            showToast(`已选择通知对象：${target}`);
+        // 代填功能
+        function fillForVillager(name) {
+            alert(`正在为${name}代填信息...`);
         }
 
-        function sendNotification() {
-            const target = document.getElementById('notification-target');
-            const targetText = target.options[target.selectedIndex].text;
-            showToast(`正在向${targetText}发送通知...`);
+        // 催办功能
+        function remindVillager(name) {
+            alert(`已向${name}发送催办通知`);
         }
 
-        function configureForm() {
-            showToast('正在配置表单设置...');
+        // 预览数据
+        function previewData() {
+            alert('正在打开数据预览...');
         }
 
-        function searchVillager() {
-            showToast('正在搜索村民...');
-        }
-
-        // 数据审核相关函数
-        function updateSelection() {
-            const checkboxes = document.querySelectorAll('.row-checkbox');
-            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-            document.getElementById('selected-count').textContent = `已选择 ${checkedCount} 项`;
-            
-            const batchActions = document.getElementById('batch-actions');
-            if (checkedCount > 0) {
-                batchActions.classList.add('show');
-            } else {
-                batchActions.classList.remove('show');
-            }
-        }
-
-        function approveRow(button) {
-            const row = button.closest('.table-row');
-            const badge = row.querySelector('.status-badge');
-            const buttons = row.querySelectorAll('.action-btn-small');
-            
-            badge.textContent = '已审核';
-            badge.className = 'status-badge status-approved';
-            buttons.forEach(btn => btn.disabled = true);
-            
-            showToast('审核通过');
-        }
-
-        function rejectRow(button) {
-            const row = button.closest('.table-row');
-            const badge = row.querySelector('.status-badge');
-            const buttons = row.querySelectorAll('.action-btn-small');
-            
-            badge.textContent = '已驳回';
-            badge.className = 'status-badge status-rejected';
-            buttons.forEach(btn => btn.disabled = true);
-            
-            showToast('已驳回');
-        }
-
-        function batchApprove() {
-            const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
-            let count = 0;
-            
-            checkedBoxes.forEach(checkbox => {
-                const row = checkbox.closest('.table-row');
-                const badge = row.querySelector('.status-badge');
-                const buttons = row.querySelectorAll('.action-btn-small');
-                
-                if (!buttons[0].disabled) {
-                    badge.textContent = '已审核';
-                    badge.className = 'status-badge status-approved';
-                    buttons.forEach(btn => btn.disabled = true);
-                    count++;
-                }
-                
-                checkbox.checked = false;
-            });
-            
-            updateSelection();
-            showToast(`批量审核通过 ${count} 项`);
-        }
-
-        function batchReject() {
-            const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
-            let count = 0;
-            
-            checkedBoxes.forEach(checkbox => {
-                const row = checkbox.closest('.table-row');
-                const badge = row.querySelector('.status-badge');
-                const buttons = row.querySelectorAll('.action-btn-small');
-                
-                if (!buttons[0].disabled) {
-                    badge.textContent = '已驳回';
-                    badge.className = 'status-badge status-rejected';
-                    buttons.forEach(btn => btn.disabled = true);
-                    count++;
-                }
-                
-                checkbox.checked = false;
-            });
-            
-            updateSelection();
-            showToast(`批量驳回 ${count} 项`);
-        }
-
+        // 导出数据
         function exportData() {
-            showToast('正在导出Excel文件...');
-            setTimeout(() => {
-                showToast('文件导出成功！');
-            }, 2000);
+            alert('正在生成Excel文件...');
         }
 
-        function shareToWechat() {
-            showToast('正在分享到微信...');
+        // 确认更新
+        function confirmUpdate(name, field) {
+            alert(`已确认更新${name}的${field}信息`);
+            event.target.closest('.villager-item').style.opacity = '0.5';
         }
 
-        function saveToPhone() {
-            showToast('正在保存到手机...');
+        // 批量更新
+        function batchUpdate() {
+            alert('已批量确认所有数据更新');
         }
 
-        // 数据沉淀相关函数
-        function resolveConflict(button, action) {
-            const conflictCard = button.closest('.conflict-card');
-            const name = conflictCard.querySelector('h4').textContent;
-            
-            let message = '';
-            switch(action) {
-                case 'accept':
-                    message = `已采纳 ${name} 的新值`;
-                    break;
-                case 'keep':
-                    message = `已保留 ${name} 的旧值`;
-                    break;
-                case 'manual':
-                    message = `正在手动修改 ${name} 的数据`;
-                    break;
-            }
-            
-            conflictCard.style.opacity = '0.5';
-            conflictCard.style.pointerEvents = 'none';
-            showToast(message);
+        // 跳过更新
+        function skipUpdate() {
+            alert('已跳过数据更新');
         }
 
-        // 数据维护相关函数
-        function addVillager() {
-            showToast('正在添加新村民...');
+        // 搜索村民
+        function searchVillagers(query) {
+            // 实现搜索逻辑
+            console.log('搜索:', query);
         }
 
-        function viewVillager(name) {
-            showToast(`正在查看 ${name} 的详细信息`);
-        }
-
-        function editVillager(name) {
-            showToast(`正在编辑 ${name} 的信息`);
-        }
-
-        // 村民相关函数
-        function fillForm() {
-            showToast('正在打开填报表单...');
-        }
-
-        // Toast提示函数
-        function showToast(message) {
-            // 移除现有的toast
-            const existingToast = document.querySelector('.toast');
-            if (existingToast) {
-                existingToast.remove();
-            }
-            
-            // 创建新的toast
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            // 2秒后自动移除
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.parentNode.removeChild(toast);
-                }
-            }, 2000);
-        }
-
-        // 页面加载完成后的初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 初始化页面
-            showPage('role-selection');
-        });
-        // OCR识别相关功能
-        let recognizedFields = [];
-        let currentEditingField = null;
-
-        // 模拟OCR识别过程
-        function simulateOCR() {
-            showPage('ocr-result');
-            
-            // 显示进度条
-            document.getElementById('ocr-progress').classList.remove('hidden');
-            document.getElementById('ocr-fields').classList.add('hidden');
-            
-            let progress = 0;
-            const progressBar = document.getElementById('progress-fill');
-            const progressText = document.getElementById('progress-text');
-            
-            const progressTexts = [
-                '正在分析文件结构...',
-                '正在识别表格字段...',
-                '正在提取字段内容...',
-                '正在生成字段配置...',
-                '识别完成！'
-            ];
-            
-            const interval = setInterval(() => {
-                progress += 20;
-                progressBar.style.width = progress + '%';
-                
-                if (progress <= 80) {
-                    progressText.textContent = progressTexts[Math.floor(progress / 20)];
-                } else {
-                    progressText.textContent = progressTexts[4];
-                    clearInterval(interval);
-                    
-                    setTimeout(() => {
-                        // 隐藏进度条，显示识别结果
-                        document.getElementById('ocr-progress').classList.add('hidden');
-                        document.getElementById('ocr-fields').classList.remove('hidden');
-                        
-                        // 生成模拟的识别字段
-                        generateMockFields();
-                    }, 500);
-                }
-            }, 800);
-        }
-
-        // 生成模拟识别字段
-        function generateMockFields() {
-            recognizedFields = [
-                {
-                    id: 'field_1',
-                    name: '姓名',
-                    type: 'text',
-                    required: true,
-                    confidence: 0.95,
-                    validation: '2-10个字符'
-                },
-                {
-                    id: 'field_2',
-                    name: '身份证号',
-                    type: 'idcard',
-                    required: true,
-                    confidence: 0.92,
-                    validation: '18位身份证号码'
-                },
-                {
-                    id: 'field_3',
-                    name: '联系电话',
-                    type: 'phone',
-                    required: true,
-                    confidence: 0.88,
-                    validation: '11位手机号码'
-                },
-                {
-                    id: 'field_4',
-                    name: '家庭住址',
-                    type: 'text',
-                    required: false,
-                    confidence: 0.85,
-                    validation: '详细地址信息'
-                },
-                {
-                    id: 'field_5',
-                    name: '职业',
-                    type: 'select',
-                    required: false,
-                    confidence: 0.78,
-                    options: ['农民', '工人', '教师', '医生', '其他'],
-                    validation: '从选项中选择'
-                }
-            ];
-            
-            renderFieldList();
-            updateFieldCount();
-        }
-
-        // 渲染字段列表
-        function renderFieldList() {
-            const fieldList = document.getElementById('field-list');
-            fieldList.innerHTML = '';
-            
-            recognizedFields.forEach((field, index) => {
-                const fieldItem = document.createElement('div');
-                fieldItem.className = 'field-item';
-                fieldItem.innerHTML = `
-                    <div class="field-header">
-                        <div class="field-info">
-                            <div class="field-name">${field.name}</div>
-                            <div class="field-meta">
-                                <span class="field-tag">${getFieldTypeText(field.type)}</span>
-                                ${field.required ? '<span class="field-tag required">必填</span>' : '<span class="field-tag">可选</span>'}
-                                <span class="field-tag">置信度 ${Math.round(field.confidence * 100)}%</span>
-                            </div>
-                        </div>
-                        <div class="field-actions">
-                            <button class="field-btn" onclick="editField('${field.id}')" title="编辑">✏️</button>
-                            <button class="field-btn" onclick="deleteField('${field.id}')" title="删除">🗑️</button>
-                        </div>
-                    </div>
-                    <div class="field-content">
-                        <div class="field-preview">
-                            ${getFieldPreview(field)}
-                        </div>
-                    </div>
-                `;
-                fieldList.appendChild(fieldItem);
+        // 筛选数据
+        function filterData(type) {
+            // 移除所有active类
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
+            
+            // 添加active类到选中的筛选器
+            event.target.classList.add('active');
+            
+            console.log('筛选类型:', type);
         }
 
-        // 获取字段类型文本
-        function getFieldTypeText(type) {
-            const typeMap = {
-                'text': '文本',
-                'number': '数字',
-                'phone': '手机号',
-                'idcard': '身份证',
-                'email': '邮箱',
-                'date': '日期',
-                'select': '下拉选择'
-            };
-            return typeMap[type] || '文本';
+        // 编辑村民
+        function editVillager(name) {
+            alert(`正在编辑${name}的信息...`);
         }
 
-        // 获取字段预览
-        function getFieldPreview(field) {
-            switch (field.type) {
-                case 'text':
-                    return `请输入${field.name}`;
-                case 'number':
-                    return `请输入数字`;
-                case 'phone':
-                    return `请输入11位手机号码`;
-                case 'idcard':
-                    return `请输入18位身份证号码`;
-                case 'email':
-                    return `请输入邮箱地址`;
-                case 'date':
-                    return `请选择日期`;
-                case 'select':
-                    return `请选择：${field.options ? field.options.join('、') : '选项1、选项2、选项3'}`;
-                default:
-                    return `请输入${field.name}`;
-            }
+        // 新增村民
+        function addNewVillager() {
+            alert('正在打开新增村民页面...');
         }
 
-        // 更新字段数量
-        function updateFieldCount() {
-            document.getElementById('field-count').textContent = recognizedFields.length;
+        // 导出村民数据
+        function exportVillagerData() {
+            alert('正在导出村民数据...');
         }
 
-        // 编辑字段
-        function editField(fieldId) {
-            const field = recognizedFields.find(f => f.id === fieldId);
-            if (!field) return;
-            
-            currentEditingField = fieldId;
-            
-            // 填充编辑表单
-            document.getElementById('edit-field-name').value = field.name;
-            document.getElementById('edit-field-type').value = field.type;
-            document.getElementById('edit-field-required').checked = field.required;
-            document.getElementById('edit-field-validation').value = field.validation || '';
-            
-            if (field.options) {
-                document.getElementById('edit-field-options').value = field.options.join('\n');
-            }
-            
-            // 显示/隐藏选项设置
-            toggleSelectOptions(field.type);
-            
-            // 显示模态框
-            document.getElementById('field-edit-modal').classList.remove('hidden');
+        // 生成报表
+        function generateReport() {
+            alert('正在生成统计报表...');
         }
 
-        // 删除字段
-        function deleteField(fieldId) {
-            if (confirm('确定要删除这个字段吗？')) {
-                recognizedFields = recognizedFields.filter(f => f.id !== fieldId);
-                renderFieldList();
-                updateFieldCount();
-                showToast('字段已删除');
-            }
+        // 导出统计
+        function exportStats() {
+            alert('正在导出统计数据...');
         }
 
-        // 新增自定义字段
-        function addCustomField() {
-            const newField = {
-                id: 'field_' + Date.now(),
-                name: '新字段',
-                type: 'text',
-                required: false,
-                confidence: 1.0,
-                validation: ''
-            };
-            
-            recognizedFields.push(newField);
-            renderFieldList();
-            updateFieldCount();
-            
-            // 自动编辑新字段
-            editField(newField.id);
-        }
-
-        // 保存字段编辑
-        function saveFieldEdit() {
-            if (!currentEditingField) return;
-            
-            const field = recognizedFields.find(f => f.id === currentEditingField);
-            if (!field) return;
-            
-            const name = document.getElementById('edit-field-name').value.trim();
-            if (!name) {
-                showToast('请输入字段名称');
-                return;
-            }
-            
-            // 更新字段信息
-            field.name = name;
-            field.type = document.getElementById('edit-field-type').value;
-            field.required = document.getElementById('edit-field-required').checked;
-            field.validation = document.getElementById('edit-field-validation').value.trim();
-            
-            // 处理选项
-            if (field.type === 'select') {
-                const optionsText = document.getElementById('edit-field-options').value.trim();
-                field.options = optionsText ? optionsText.split('\n').filter(opt => opt.trim()) : [];
-            } else {
-                delete field.options;
-            }
-            
-            // 重新渲染
-            renderFieldList();
-            closeFieldModal();
-            showToast('字段已保存');
-        }
-
-        // 关闭字段编辑模态框
-        function closeFieldModal() {
-            document.getElementById('field-edit-modal').classList.add('hidden');
-            currentEditingField = null;
-        }
-
-        // 切换选项设置显示
-        function toggleSelectOptions(fieldType) {
-            const optionsGroup = document.getElementById('select-options-group');
-            if (fieldType === 'select') {
-                optionsGroup.style.display = 'block';
-            } else {
-                optionsGroup.style.display = 'none';
-            }
-        }
-
-        // 字段类型改变事件
+        // 拖拽上传支持
         document.addEventListener('DOMContentLoaded', function() {
-            const fieldTypeSelect = document.getElementById('edit-field-type');
-            if (fieldTypeSelect) {
-                fieldTypeSelect.addEventListener('change', function() {
-                    toggleSelectOptions(this.value);
+            const uploadArea = document.querySelector('.upload-area');
+            if (uploadArea) {
+                uploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+
+                uploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                });
+
+                uploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        handleFileUpload({target: {files: files}});
+                    }
                 });
             }
         });
-
-        // 保存草稿
-        function saveAsDraft() {
-            const draftData = {
-                fields: recognizedFields,
-                timestamp: new Date().toISOString(),
-                name: '表格草稿_' + new Date().toLocaleDateString()
-            };
-            
-            // 模拟保存到本地存储
-            localStorage.setItem('form_draft', JSON.stringify(draftData));
-            showToast('草稿已保存');
-        }
-
-        // 生成表单
-        function generateForm() {
-            if (recognizedFields.length === 0) {
-                showToast('请至少添加一个字段');
-                return;
-            }
-            
-            // 验证必要字段
-            const invalidFields = recognizedFields.filter(field => !field.name.trim());
-            if (invalidFields.length > 0) {
-                showToast('请完善所有字段的名称');
-                return;
-            }
-            
-            showToast('表单生成成功！正在跳转到数据采集页面...');
-            
-            setTimeout(() => {
-                showPage('data-collection');
-            }, 1500);
-        }
-
-        // 代填相关功能
-        function fillForVillager(villagerName) {
-            // 设置代填村民信息
-            document.getElementById('proxy-villager-name').textContent = `为 ${villagerName} 代填表单`;
-            document.getElementById('proxy-name').value = villagerName;
-            
-            // 根据村民姓名设置不同的身份证号（模拟数据）
-            const villagerData = {
-                '张三': '320***********1234',
-                '李四': '320***********5678',
-                '王五': '320***********9012'
-            };
-            
-            document.getElementById('proxy-idcard').value = villagerData[villagerName] || '320***********0000';
-            
-            // 清空其他字段
-            document.getElementById('proxy-phone').value = '';
-            document.getElementById('proxy-address').value = '';
-            document.getElementById('proxy-job').value = '';
-            document.getElementById('proxy-note').value = '';
-            
-            // 跳转到代填表单页面
-            showPage('proxy-fill-form');
-            showToast(`正在为 ${villagerName} 代填表单`);
-        }
-
-        // 提交代填表单
-        function submitProxyForm() {
-            const name = document.getElementById('proxy-name').value;
-            const phone = document.getElementById('proxy-phone').value;
-            const note = document.getElementById('proxy-note').value;
-            
-            if (!phone.trim()) {
-                showToast('请输入联系电话');
-                return;
-            }
-            
-            if (!note.trim()) {
-                showToast('请填写代填说明');
-                return;
-            }
-            
-            showToast(`${name} 的表单提交成功！`);
-            
-            setTimeout(() => {
-                showPage('data-collection');
-                // 切换到任务看板查看结果
-                switchCollectionTab('kanban');
-            }, 1500);
-        }
-
-        // 村民填报功能
-        function fillForm() {
-            // 自动加载村民信息（模拟当前登录村民）
-            document.getElementById('villager-name').value = '张三';
-            document.getElementById('villager-idcard').value = '320***********1234';
-            document.getElementById('villager-phone').value = '';
-            document.getElementById('villager-address').value = '';
-            document.getElementById('villager-job').value = '';
-            
-            // 跳转到村民填报页面
-            showPage('villager-fill-form');
-            showToast('正在加载您的待填表单...');
-        }
-
-        // 提交村民表单
-        function submitVillagerForm() {
-            const phone = document.getElementById('villager-phone').value;
-            
-            if (!phone.trim()) {
-                showToast('请输入联系电话');
-                return;
-            }
-            
-            showToast('表单提交成功！感谢您的配合');
-            
-            setTimeout(() => {
-                showPage('villager-main');
-            }, 1500);
-        }
-
-        // 保存草稿功能
-        function saveDraft() {
-            showToast('草稿已保存');
-        }
-
-        // 数据采集Tab切换功能
-        function switchCollectionTab(tabName) {
-            // 隐藏所有tab内容
-            document.querySelectorAll('#data-collection .mobile-tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // 移除所有tab的active状态
-            document.querySelectorAll('#data-collection .mobile-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // 显示选中的tab内容
-            const targetContent = document.getElementById(tabName + '-tab');
-            if (targetContent) {
-                targetContent.classList.add('active');
-            }
-            
-            // 激活选中的tab
-            event.currentTarget.classList.add('active');
-        }
-
-        // 修改原有的上传选择函数
-        function selectUploadType(type) {
-            hideUploadMenu();
-            
-            if (type === 'local') {
-                showToast('正在打开文件选择器...');
-                setTimeout(() => {
-                    simulateOCR();
-                }, 1000);
-            } else if (type === 'wechat') {
-                showToast('正在连接微信...');
-                setTimeout(() => {
-                    simulateOCR();
-                }, 1000);
-            }
-        }
-
-        // 修改拍照识别函数
-        function startCamera() {
-            showToast('正在启动相机...');
-            setTimeout(() => {
-                simulateOCR();
-            }, 1000);
-        }
-
     </script>
 </body>
 </html>
