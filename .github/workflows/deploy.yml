@@ -3,8 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 permissions:
   contents: read
@@ -16,18 +14,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v4
+        continue-on-error: true
       
+      - name: Build site
+        run: |
+          # 确保index.html存在
+          if [ ! -f "index.html" ]; then
+            echo "index.html not found, creating redirect..."
+            echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=./shan-zhi-mei-mobile.html"></head><body>Redirecting...</body></html>' > index.html
+          fi
+          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -36,3 +41,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
