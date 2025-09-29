@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>善治美 - 数字化村务管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* 头部导航 */
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px 16px 16px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+        }
+
+        /* 角色选择页面 */
+        .screen {
+            display: none;
+            min-height: calc(100vh - 80px);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .role-selection {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .role-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .role-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .role-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border-color: #4CAF50;
+        }
+
+        .role-card .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #4CAF50;
+        }
+
+        .role-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .role-card p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* 村两委工作台 */
+        .dashboard {
+            padding: 20px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        .action-card .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: #4CAF50;
+        }
+
+        .action-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .action-card p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 任务统计 */
+        .stats-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .stats-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4CAF50;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 文件上传页面 */
+        .upload-section {
+            padding: 20px;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+
+        .upload-area.dragover {
+            border-color: #4CAF50;
+            background: #f0fff0;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 16px;
+        }
+
+        .upload-area:hover .upload-icon {
+            color: #4CAF50;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .upload-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .method-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        /* 表格模板库 */
+        .template-library {
+            padding: 20px;
+        }
+
+        .template-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .template-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .template-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .template-badge {
+            background: #e8f5e8;
+            color: #4CAF50;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .template-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        /* 任务看板 */
+        .task-board {
+            padding: 20px;
+        }
+
+        .progress-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .progress-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .task-tabs {
+            display: flex;
+            background: #f8f8f8;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            color: #4CAF50;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .villager-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .villager-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .villager-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .villager-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .villager-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-call {
+            background: #e3f2fd;
+            color: #2196F3;
+        }
+
+        .btn-edit {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .btn-remind {
+            background: #fce4ec;
+            color: #e91e63;
+        }
+
+        /* 村民填报页面 */
+        .form-section {
+            padding: 20px;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .form-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .form-input.prefilled {
+            background: #f8fff8;
+            border-color: #4CAF50;
+        }
+
+        .prefilled-label {
+            font-size: 12px;
+            color: #4CAF50;
+            margin-top: 4px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 14px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 414px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            padding: 8px 0;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #4CAF50;
+        }
+
+        .nav-item .icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item .label {
+            font-size: 12px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 375px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .role-selection {
+                padding: 30px 16px;
+            }
+            
+            .dashboard {
+                padding: 16px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 隐藏文件输入 */
+        #fileInput {
+            display: none;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 成功提示 */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* 图标字体 */
+        .icon {
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部导航 -->
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 id="headerTitle">善治美</h1>
+            <div class="subtitle" id="headerSubtitle">数字化村务管理系统</div>
+        </div>
+
+        <!-- 角色选择页面 -->
+        <div id="roleSelection" class="screen active">
+            <div class="role-selection">
+                <h2 class="role-title">欢迎使用善治美</h2>
+                <p class="role-subtitle">请选择您的身份</p>
+                
+                <div class="role-cards">
+                    <div class="role-card" onclick="selectRole('village-committee')">
+                        <div class="icon">👥</div>
+                        <h3>村两委</h3>
+                        <p>村干部工作台<br>管理任务、数据采集、表格处理</p>
+                    </div>
+                    
+                    <div class="role-card" onclick="selectRole('villager')">
+                        <div class="icon">👤</div>
+                        <h3>村民</h3>
+                        <p>信息填报<br>查看通知、填写表格、更新信息</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 村两委工作台 -->
+        <div id="committeeDashboard" class="screen">
+            <div class="dashboard">
+                <!-- 快捷操作 -->
+                <div class="quick-actions">
+                    <div class="action-card" onclick="showScreen('fileUpload')">
+                        <div class="icon">📄</div>
+                        <h4>新建任务</h4>
+                        <p>上传表格文件</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="showScreen('templateLibrary')">
+                        <div class="icon">📚</div>
+                        <h4>模板库</h4>
+                        <p>使用已保存模板</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="showScreen('taskBoard')">
+                        <div class="icon">📊</div>
+                        <h4>任务看板</h4>
+                        <p>查看采集进度</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="showScreen('dataManagement')">
+                        <div class="icon">🗃️</div>
+                        <h4>村大表</h4>
+                        <p>数据维护管理</p>
+                    </div>
+                </div>
+
+                <!-- 任务统计 -->
+                <div class="stats-section">
+                    <h3 class="stats-title">今日概览</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">进行中任务</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">127</div>
+                            <div class="stat-label">已完成填报</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">23</div>
+                            <div class="stat-label">待处理</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文件上传页面 -->
+        <div id="fileUpload" class="screen">
+            <div class="upload-section">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">☁️</div>
+                    <div class="upload-text">点击上传文件</div>
+                    <div class="upload-hint">支持 Excel、Word、PDF、图片格式</div>
+                </div>
+                
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.doc,.docx,.pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(event)">
+                
+                <div class="upload-methods">
+                    <div class="method-card" onclick="startOCR()">
+                        <div class="icon">📷</div>
+                        <h4>拍照识别</h4>
+                        <p>OCR智能识别</p>
+                    </div>
+                    
+                    <div class="method-card" onclick="showScreen('templateLibrary')">
+                        <div class="icon">📋</div>
+                        <h4>选择模板</h4>
+                        <p>从模板库选择</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格模板库 -->
+        <div id="templateLibrary" class="screen">
+            <div class="template-library">
+                <div class="template-grid">
+                    <div class="template-card" onclick="useTemplate('lowIncome')">
+                        <div class="template-header">
+                            <div class="template-name">季度低保户统计</div>
+                            <div class="template-badge">常用</div>
+                        </div>
+                        <div class="template-info">最后使用：2024年3月</div>
+                        <div class="template-info">包含字段：姓名、身份证、家庭收入、联系方式</div>
+                        <div class="template-actions">
+                            <button class="btn-small btn-primary">使用模板</button>
+                            <button class="btn-small btn-secondary">编辑</button>
+                        </div>
+                    </div>
+                    
+                    <div class="template-card" onclick="useTemplate('population')">
+                        <div class="template-header">
+                            <div class="template-name">人口普查登记</div>
+                            <div class="template-badge">新建</div>
+                        </div>
+                        <div class="template-info">最后使用：2024年2月</div>
+                        <div class="template-info">包含字段：户主姓名、家庭成员、年龄、职业</div>
+                        <div class="template-actions">
+                            <button class="btn-small btn-primary">使用模板</button>
+                            <button class="btn-small btn-secondary">编辑</button>
+                        </div>
+                    </div>
+                    
+                    <div class="template-card" onclick="createNewTemplate()">
+                        <div class="template-header">
+                            <div class="template-name">+ 创建新模板</div>
+                        </div>
+                        <div class="template-info">使用可视化工具创建自定义表格模板</div>
+                        <div class="template-actions">
+                            <button class="btn-small btn-primary">开始创建</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任务看板 -->
+        <div id="taskBoard" class="screen">
+            <div class="task-board">
+                <!-- 进度概览 -->
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <div class="progress-title">季度低保户统计</div>
+                        <div class="progress-text">65/100 (65%)</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 14px; color: #666;">
+                        <span>开始时间：2024-03-01</span>
+                        <span>截止时间：2024-03-15</span>
+                    </div>
+                </div>
+
+                <!-- 任务标签页 -->
+                <div class="task-tabs">
+                    <div class="tab active" onclick="switchTab('pending')">待完成 (35)</div>
+                    <div class="tab" onclick="switchTab('completed')">已完成 (65)</div>
+                </div>
+
+                <!-- 村民列表 -->
+                <div id="pendingList" class="villager-list">
+                    <div class="villager-item">
+                        <div class="villager-info">
+                            <h4>张三</h4>
+                            <p>身份证：320***********1234</p>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="btn-icon btn-call" onclick="callVillager('张三')" title="电话联系">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="btn-icon btn-edit" onclick="fillForVillager('张三')" title="代为填写">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon btn-remind" onclick="remindVillager('张三')" title="发送提醒">
+                                <i class="fas fa-bell"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="villager-item">
+                        <div class="villager-info">
+                            <h4>李四</h4>
+                            <p>身份证：320***********5678</p>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="btn-icon btn-call" onclick="callVillager('李四')" title="电话联系">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="btn-icon btn-edit" onclick="fillForVillager('李四')" title="代为填写">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon btn-remind" onclick="remindVillager('李四')" title="发送提醒">
+                                <i class="fas fa-bell"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="completedList" class="villager-list" style="display: none;">
+                    <div class="villager-item">
+                        <div class="villager-info">
+                            <h4>王五</h4>
+                            <p>完成时间：2024-03-05 14:30</p>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="btn-icon btn-secondary" onclick="viewSubmission('王五')" title="查看提交">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" onclick="sendBatchReminder()">
+                        <i class="fas fa-paper-plane"></i> 批量发送提醒
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <i class="fas fa-download"></i> 导出Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 村民填报页面 -->
+        <div id="villagerForm" class="screen">
+            <div class="form-section">
+                <div class="form-card">
+                    <h3 class="form-title">季度低保户统计表</h3>
+                    <p style="color: #666; margin-bottom: 20px;">请确认或补充以下信息</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">姓名</label>
+                        <input type="text" class="form-input prefilled" value="张三" readonly>
+                        <div class="prefilled-label">✓ 系统预填 (99%置信度)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">身份证号码</label>
+                        <input type="text" class="form-input prefilled" value="320***********1234" readonly>
+                        <div class="prefilled-label">✓ 系统预填 (99%置信度)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">联系方式</label>
+                        <input type="text" class="form-input prefilled" value="138****5678">
+                        <div class="prefilled-label">✓ 系统预填 (95%置信度)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">家庭月收入 (元)</label>
+                        <input type="number" class="form-input" placeholder="请输入家庭月收入">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">现住址</label>
+                        <input type="text" class="form-input" placeholder="请输入详细地址">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">备注</label>
+                        <textarea class="form-input" rows="3" placeholder="其他需要说明的情况"></textarea>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="submitForm()">
+                    <i class="fas fa-check"></i> 提交信息
+                </button>
+            </div>
+        </div>
+
+        <!-- 数据管理页面 -->
+        <div id="dataManagement" class="screen">
+            <div class="form-section">
+                <div class="form-card">
+                    <h3 class="form-title">村大表数据维护</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">搜索村民</label>
+                        <input type="text" class="form-input" placeholder="输入姓名或身份证号" oninput="searchVillager(this.value)">
+                    </div>
+                </div>
+                
+                <div id="villagerDataList" class="villager-list">
+                    <div class="villager-item" onclick="editVillagerData('张三')">
+                        <div class="villager-info">
+                            <h4>张三</h4>
+                            <p>身份证：320***********1234 | 电话：138****5678</p>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="btn-icon btn-edit" title="编辑信息">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="villager-item" onclick="editVillagerData('李四')">
+                        <div class="villager-info">
+                            <h4>李四</h4>
+                            <p>身份证：320***********5678 | 电话：139****1234</p>
+                        </div>
+                        <div class="villager-actions">
+                            <button class="btn-icon btn-edit" title="编辑信息">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScreen = 'roleSelection';
+        let currentRole = null;
+
+        // 角色选择
+        function selectRole(role) {
+            currentRole = role;
+            if (role === 'village-committee') {
+                showScreen('committeeDashboard');
+                updateHeader('村两委工作台', '数据采集与管理');
+            } else if (role === 'villager') {
+                showScreen('villagerForm');
+                updateHeader('信息填报', '请确认或补充信息');
+            }
+        }
+
+        // 页面切换
+        function showScreen(screenId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            document.getElementById(screenId).classList.add('active');
+            currentScreen = screenId;
+            
+            // 更新头部
+            updateScreenHeader(screenId);
+            
+            // 显示返回按钮
+            if (screenId !== 'roleSelection') {
+                document.querySelector('.back-btn').style.display = 'block';
+            } else {
+                document.querySelector('.back-btn').style.display = 'none';
+            }
+        }
+
+        // 更新页面头部
+        function updateScreenHeader(screenId) {
+            const headers = {
+                'roleSelection': { title: '善治美', subtitle: '数字化村务管理系统' },
+                'committeeDashboard': { title: '村两委工作台', subtitle: '数据采集与管理' },
+                'fileUpload': { title: '新建任务', subtitle: '上传表格文件' },
+                'templateLibrary': { title: '表格模板库', subtitle: '选择或创建模板' },
+                'taskBoard': { title: '任务看板', subtitle: '数据采集进度管理' },
+                'villagerForm': { title: '信息填报', subtitle: '请确认或补充信息' },
+                'dataManagement': { title: '村大表管理', subtitle: '数据维护与更新' }
+            };
+            
+            const header = headers[screenId];
+            if (header) {
+                updateHeader(header.title, header.subtitle);
+            }
+        }
+
+        // 更新头部信息
+        function updateHeader(title, subtitle) {
+            document.getElementById('headerTitle').textContent = title;
+            document.getElementById('headerSubtitle').textContent = subtitle;
+        }
+
+        // 返回上一页
+        function goBack() {
+            if (currentScreen === 'committeeDashboard' || currentScreen === 'villagerForm') {
+                showScreen('roleSelection');
+            } else if (currentRole === 'village-committee') {
+                showScreen('committeeDashboard');
+            } else {
+                showScreen('roleSelection');
+            }
+        }
+
+        // 文件上传处理
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // 模拟文件处理
+                showProcessingDialog('正在处理文件...', () => {
+                    showOCRResult(file.name);
+                });
+            }
+        }
+
+        // OCR识别
+        function startOCR() {
+            showProcessingDialog('启动相机进行OCR识别...', () => {
+                showOCRResult('拍照识别结果');
+            });
+        }
+
+        // 显示处理对话框
+        function showProcessingDialog(message, callback) {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+            
+            dialog.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 12px; text-align: center; max-width: 300px;">
+                    <div class="loading" style="margin: 0 auto 16px;"></div>
+                    <p>${message}</p>
+                </div>
+            `;
+            
+            document.body.appendChild(dialog);
+            
+            setTimeout(() => {
+                document.body.removeChild(dialog);
+                callback();
+            }, 2000);
+        }
+
+        // 显示OCR识别结果
+        function showOCRResult(fileName) {
+            alert(`文件 "${fileName}" 处理完成！\n\n识别到表格字段：\n- 姓名\n- 身份证号码\n- 联系方式\n- 家庭收入\n\n系统已自动匹配村大表数据，置信度95%。\n\n是否保存为模板？`);
+            showScreen('taskBoard');
+        }
+
+        // 使用模板
+        function useTemplate(templateId) {
+            showProcessingDialog('正在加载模板...', () => {
+                alert('模板加载成功！已自动预填充村民数据。');
+                showScreen('taskBoard');
+            });
+        }
+
+        // 创建新模板
+        function createNewTemplate() {
+            alert('进入可视化模板编辑器...\n\n您可以通过拖拽组件来创建自定义表格模板。');
+        }
+
+        // 任务看板标签切换
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'pending') {
+                document.getElementById('pendingList').style.display = 'block';
+                document.getElementById('completedList').style.display = 'none';
+            } else {
+                document.getElementById('pendingList').style.display = 'none';
+                document.getElementById('completedList').style.display = 'block';
+            }
+        }
+
+        // 村民操作功能
+        function callVillager(name) {
+            alert(`正在拨打 ${name} 的电话...`);
+        }
+
+        function fillForVillager(name) {
+            alert(`为 ${name} 代填信息...\n\n系统已预填充已知数据，请补充缺失信息。`);
+        }
+
+        function remindVillager(name) {
+            alert(`已向 ${name} 发送填报提醒！`);
+        }
+
+        function viewSubmission(name) {
+            alert(`查看 ${name} 的提交信息...`);
+        }
+
+        // 批量操作
+        function sendBatchReminder() {
+            alert('已向35位未完成填报的村民发送提醒！');
+        }
+
+        function exportData() {
+            showProcessingDialog('正在生成Excel文件...', () => {
+                alert('Excel文件生成成功！\n\n文件已保存到本地，可通过微信等方式提交给上级部门。');
+            });
+        }
+
+        // 表单提交
+        function submitForm() {
+            showProcessingDialog('正在提交信息...', () => {
+                alert('信息提交成功！\n\n感谢您的配合。');
+                showScreen('roleSelection');
+            });
+        }
+
+        // 数据管理
+        function searchVillager(query) {
+            // 模拟搜索功能
+            console.log('搜索村民:', query);
+        }
+
+        function editVillagerData(name) {
+            alert(`编辑 ${name} 的详细信息...\n\n您可以修改任何字段，系统会记录变更历史。`);
+        }
+
+        // 拖拽上传
+        const uploadArea = document.querySelector('.upload-area');
+        if (uploadArea) {
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload({ target: { files } });
+                }
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('善治美系统已加载');
+        });
+    </script>
+</body>
+</html>

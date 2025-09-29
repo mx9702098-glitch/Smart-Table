@@ -1,0 +1,27 @@
+{
+  "name": "shan-zhi-mei",
+  "version": "1.0.0",
+  "description": "善治美 - 数字化村务管理平台",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "dev": "python3 -m http.server 3000",
+    "preview": "python3 -m http.server 8080"
+  },
+  "keywords": [
+    "村务管理",
+    "数字化",
+    "移动端",
+    "表格处理",
+    "OCR识别"
+  ],
+  "author": "善治美团队",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/shan-zhi-mei.git"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

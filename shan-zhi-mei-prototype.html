@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>善治美 - 产品原型</title>
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #50E3C2;
+            --background-color: #f4f7f9;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --subtle-text-color: #777;
+            --border-color: #e0e6ed;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2.5em;
+        }
+        header p {
+            color: var(--subtle-text-color);
+            margin-top: 5px;
+        }
+
+        .step-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .step-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .step-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.8em;
+        }
+        .step-header .subtitle {
+            margin: 5px 0 0;
+            color: var(--subtle-text-color);
+            font-weight: normal;
+        }
+
+        .step-content {
+            padding: 25px;
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .phone-mockup {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            height: 650px;
+            background: #111;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-screen {
+            background: var(--background-color);
+            border-radius: 25px;
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .phone-screen::-webkit-scrollbar { display: none; } /* Hide scrollbar */
+
+        .description {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .description h3 {
+            color: var(--primary-color);
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 10px;
+            margin-top: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #3a7ac8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .app-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .app-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .app-card p {
+            margin: 0;
+            font-size: 0.9em;
+            color: var(--subtle-text-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+        .confidence-99 { border-left: 4px solid var(--success-color); padding-left: 10px; }
+        .confidence-60 { border-left: 4px solid var(--warning-color); padding-left: 10px; }
+        
+        .task-board {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .task-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+        
+        .task-list-item.completed {
+            background: #e0f8e0;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+        }
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .data-table th {
+            background-color: #f2f6fa;
+        }
+        
+        .conflict-item {
+            border: 1px solid var(--warning-color);
+            padding: 15px;
+            border-radius: 8px;
+            background: #fffaf0;
+        }
+        .conflict-item p { margin: 0 0 10px 0; }
+        .conflict-item .old-data { text-decoration: line-through; color: var(--danger-color); }
+        .conflict-item .new-data { color: var(--success-color); font-weight: bold; }
+
+        @media (max-width: 768px) {
+            .step-content {
+                flex-direction: column;
+            }
+            .phone-mockup {
+                margin: 0 auto;
+            }
+            header h1 { font-size: 2em; }
+            .step-header h2 { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>善治美 - 数字化村务产品原型</h1>
+            <p>基于您的产品流程与功能描述，精准还原的产品原型</p>
+        </header>
+
+        <!-- 第一步：任务启动 -->
+        <div class="step-card">
+            <div class="step-header">
+                <h2>第一步：任务启动</h2>
+                <p class="subtitle">灵活的数字化建表，解决数据采集与录入效率低下的问题</p>
+            </div>
+            <div class="step-content">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <h4 style="text-align: center; color: var(--primary-color);">创建新任务</h4>
+                        <div class="app-card">
+                            <h4>上传文件</h4>
+                            <p>从手机相册或文件中选择表格</p>
+                        </div>
+                        <div class="app-card">
+                            <h4>拍照识别</h4>
+                            <p>拍摄纸质表格，OCR智能识别</p>
+                        </div>
+                        <div class="app-card">
+                            <h4>从模板库选用</h4>
+                            <p>使用“季度低保户统计”等常用模板</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <h3>引入表格模板化</h3>
+                    <p>当用户首次上传新表并校对后，系统会提示：“是否将此表格存为‘季度低保户统计模板’？”。保存后可从“表格模板库”中直接选用，也支持通过拖拽组件的方式快速创建和修改模板。</p>
+                    <br>
+                    <h3>OCR识别（辅助手段）</h3>
+                    <p>对于临时的印刷体表格，可通过拍照或上传文件，由OCR识别生成一次性在线表单。村干部快速校对后即可投入使用，极大提升了临时任务的响应速度。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第二步：数据预填 -->
+        <div class="step-card">
+            <div class="step-header">
+                <h2>第二步：数据预填</h2>
+                <p class="subtitle">基于“村大表”的智能填充，解决数据整合与处理过程繁琐的问题</p>
+            </div>
+            <div class="step-content">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <h4 style="text-align: center; color: var(--primary-color);">智能映射与预填</h4>
+                        <div class="form-group confidence-99">
+                            <label>姓名 (置信度: 99%)</label>
+                            <input type="text" value="张三" readonly>
+                        </div>
+                        <div class="form-group confidence-99">
+                            <label>身份证件号码 (置信度: 99%)</label>
+                            <input type="text" value="3301...XXXX" readonly>
+                        </div>
+                        <div class="form-group confidence-60">
+                            <label>现住址 (置信度: 60%)</label>
+                            <input type="text" value="刘营社区幸福路18号">
+                            <small style="color: var(--warning-color);">系统猜测“现住址”=“户籍所在地”，请核对。</small>
+                        </div>
+                        <div class="form-group">
+                            <label>家庭年收入</label>
+                            <input type="text" placeholder="待填写">
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <h3>智能映射引擎</h3>
+                    <p>无论以何种方式建表，系统都会启动“智能映射”引擎，自动将表单字段与“善治美村大表”中的数据进行匹配，并预填充已有信息。</p>
+                    <h3>智能映射词典</h3>
+                    <p>AI能够学习并积累村子特有的映射关系，例如自动关联“身份证件号码”与“身份证号”。这种智能词典会随着使用不断进化，越来越精准。</p>
+                    <h3>置信度高亮提醒</h3>
+                    <p>系统会用不同颜色或标签来显示自动映射的置信度。例如，“姓名”这类高置信度匹配会自动通过；而“现住址”与“户籍所在地”这类模糊匹配则会高亮提醒用户检查，确保数据准确性。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三步：数据采集 -->
+        <div class="step-card">
+            <div class="step-header">
+                <h2>第三步：数据采集</h2>
+                <p class="subtitle">可视化的多渠道任务执行，减轻数据从源头难以实现数字化的问题</p>
+            </div>
+            <div class="step-content">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <h4 style="text-align: center; color: var(--primary-color);">季度低保户统计任务看板</h4>
+                        <div class="tabs">
+                            <div class="tab active">未完成 (3)</div>
+                            <div class="tab">已完成 (12)</div>
+                        </div>
+                        <div class="task-board">
+                            <ul class="task-list">
+                                <li class="task-list-item">
+                                    <span>李四</span>
+                                    <button class="btn btn-sm" style="padding: 5px 10px;">代填</button>
+                                </li>
+                                <li class="task-list-item">
+                                    <span>王五</span>
+                                    <button class="btn btn-sm" style="padding: 5px 10px;">代填</button>
+                                </li>
+                                <li class="task-list-item">
+                                    <span>赵六</span>
+                                    <button class="btn btn-sm" style="padding: 5px 10px;">代填</button>
+                                </li>
+                            </ul>
+                            <button class="btn btn-secondary">一键提醒未完成村民</button>
+                            <button class="btn">一键通知所有村民</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <h3>可视化任务看板</h3>
+                    <p>系统为每次任务生成一个“任务看板”，村干部可以清晰地看到数据采集的实时进度，包括已完成和未完成的村民名单。</p>
+                    <h3>线上通知</h3>
+                    <p>可一键向需要填报的村民发送小程序通知。村民打开后看到的是一个信息已大半预填好的简洁表单，只需确认或补充少量信息，极大降低了填报门槛。</p>
+                    <h3>线下代填</h3>
+                    <p>对于不便使用手机的村民，村干部可以在“未完成”列表中点击姓名，选择“代为填写”，直接将通过电话、入户问询到的信息录入系统。</p>
+                    <h3>实时催办</h3>
+                    <p>看板清晰展示了任务进度，村干部可对未完成的村民一键发送提醒，有效提高任务完成率。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第四步：数据审核与导出 -->
+        <div class="step-card">
+            <div class="step-header">
+                <h2>第四步：数据审核与导出</h2>
+                <p class="subtitle">一键生成可提交文件</p>
+            </div>
+            <div class="step-content" style="flex-direction: column;">
+                <h3>数据总览和审核</h3>
+                <p>所有数据收集完毕后，村干部可在小程序内进行最后的数据总览和审核。确认无误后，点击“导出”。</p>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>姓名</th>
+                                <th>身份证号</th>
+                                <th>联系方式</th>
+                                <th>家庭年收入</th>
+                                <th>...</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>张三</td>
+                                <td>3301...XXXX</td>
+                                <td>138****1234</td>
+                                <td>50000</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>李四</td>
+                                <td>3301...YYYY</td>
+                                <td>139****5678</td>
+                                <td>45000</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <div>
+                    <button class="btn">导出为上级要求的Excel文件</button>
+                </div>
+                <p>系统会一键生成与上级部门要求完全一致的Excel文件，方便村干部通过微信等方式直接提交。</p>
+            </div>
+        </div>
+        
+        <!-- 第五步：数据沉淀 -->
+        <div class="step-card">
+            <div class="step-header">
+                <h2>第五步：数据沉淀</h2>
+                <p class="subtitle">带审核机制的智能更新，解决数据孤岛与资产流失的问题</p>
+            </div>
+            <div class="step-content">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <h4 style="text-align: center; color: var(--primary-color);">数据冲突审核队列</h4>
+                        <div class="app-card conflict-item">
+                            <h4>村民：王五</h4>
+                            <p>字段：联系方式</p>
+                            <p>原数据: <span class="old-data">139****5678</span></p>
+                            <p>新数据: <span class="new-data">188****8888</span></p>
+                            <button class="btn btn-sm" style="padding: 5px 10px;">确认更新</button>
+                        </div>
+                        <div class="app-card">
+                            <h4>新增字段提醒</h4>
+                            <p>“家庭年收入”是新的数据维度，已自动为“村大表”扩充。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <h3>新增字段</h3>
+                    <p>任务完成后，系统自动将本次收集到的新数据与“善治美村大表”进行比对，自动为“村大表”扩充新的数据维度，如“家庭年收入”等。</p>
+                    <h3>数据冲突审核</h3>
+                    <p>当新旧数据不一致时（如电话号码变更），将自动进入“数据冲突审核队列”。村干部手动确认后，才会更新“村大表”，确保核心数据资产的准确性。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第六步：数据维护 -->
+        <div class="step-card">
+            <div class="step-header">
+                <h2>第六步：数据维护</h2>
+                <p class="subtitle">保障资产的持续“鲜活”，解决数字信息更新滞后的问题</p>
+            </div>
+            <div class="step-content">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <h4 style="text-align: center; color: var(--primary-color);">“村大表”管理模块</h4>
+                        <input type="search" placeholder="搜索村民姓名..." style="width: 100%; box-sizing: border-box; padding: 8px; margin-bottom: 15px;">
+                        <div class="app-card">
+                            <h4>张三</h4>
+                            <p>3301...XXXX</p>
+                            <button class="btn-outline btn-sm" style="float: right; padding: 3px 8px;">编辑</button>
+                        </div>
+                        <div class="app-card">
+                            <h4>李四</h4>
+                            <p>3301...YYYY</p>
+                            <button class="btn-outline btn-sm" style="float: right; padding: 3px 8px;">编辑</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <h3>独立的管理模块</h3>
+                    <p>系统提供独立的“村大表”管理模块，支持常态化的数据维护工作。</p>
+                    <h3>即时更新</h3>
+                    <p>村干部可随时进入模块，对任一村民的任一信息进行快速修改、补充，确保“村大表”这份核心数据资产的持续“鲜活”与准确。</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<script>
+    // Simple script for tab switching
+    document.querySelectorAll('.tabs').forEach(tabContainer => {
+        const tabs = tabContainer.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // In a real app, you would also switch the content panel here.
+            });
+        });
+    });
+</script>
+</body>
+</html>
