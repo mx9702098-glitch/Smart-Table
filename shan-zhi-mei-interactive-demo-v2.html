@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>善治美 - 交互式产品Demo V2</title>
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #50E3C2;
+            --background-color: #f4f7f9;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --subtle-text-color: #777;
+            --border-color: #e0e6ed;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .header p {
+            color: var(--subtle-text-color);
+            margin-top: 5px;
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.6em;
+        }
+        .card-header .subtitle {
+            margin: 5px 0 0;
+            color: var(--subtle-text-color);
+            font-weight: normal;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+        
+        .card-footer {
+            padding: 15px 25px;
+            text-align: right;
+            border-top: 1px solid var(--border-color);
+            background-color: #f9fafb;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #3a7ac8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+        
+        /* Role Selection */
+        #role-selection-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        #role-selection-view h1 {
+            color: var(--primary-color);
+            margin-bottom: 40px;
+        }
+        .role-button {
+            width: 250px;
+            padding: 20px;
+            font-size: 1.2em;
+            margin: 10px;
+        }
+
+        /* Phone Mockup */
+        .phone-mockup {
+            margin: auto;
+            max-width: 400px;
+            height: 680px;
+            background: #111;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-screen {
+            background: var(--background-color);
+            border-radius: 25px;
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+        .phone-screen::-webkit-scrollbar { display: none; }
+
+        .app-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .app-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .app-card h4 { margin: 0 0 10px 0; }
+        .app-card p { margin: 0; font-size: 0.9em; color: var(--subtle-text-color); }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .form-group input[readonly] { background-color: #f0f0f0; }
+
+        .confidence-99 { border-left: 4px solid var(--success-color); padding-left: 10px; }
+        .confidence-60 { border-left: 4px solid var(--warning-color); padding-left: 10px; }
+        
+        .tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; }
+        .tab { padding: 10px 15px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+        .tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+        
+        .tab-content { margin-top: 20px; }
+        
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th, .data-table td { padding: 12px; border: 1px solid var(--border-color); text-align: left; font-size: 0.9em; }
+        .data-table th { background-color: #f2f6fa; }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="role-selection-view" class="page active">
+        <h1>欢迎使用“善治美”</h1>
+        <p style="color: var(--subtle-text-color); font-size: 1.2em; max-width: 500px; margin: -20px auto 40px;">请选择您的角色以开始体验数字化村务管理流程</p>
+        <button class="btn role-button" data-role="committee">我是村两委</button>
+        <button class="btn role-button btn-secondary" data-role="villager">我是村民</button>
+    </div>
+
+    <!-- 村两委视角 -->
+    <div id="committee-view" class="container" style="display: none;">
+        <span class="back-button" data-goto="role-selection-view">&larr; 返回角色选择</span>
+        <div class="header">
+            <h1>村两委工作台</h1>
+            <p>高效管理村务，轻松处理数据</p>
+        </div>
+
+        <!-- 3.1 任务启动 -->
+        <div id="committee-task-startup" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>任务启动</h2>
+                    <p class="subtitle">灵活的数字化建表，解决数据采集与录入效率低下的问题</p>
+                </div>
+                <div class="card-content">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="upload">上传</div>
+                        <div class="tab" data-tab="ocr">识别</div>
+                        <div class="tab" data-tab="wechat">微信文件</div>
+                        <div class="tab" data-tab="manage">管理</div>
+                    </div>
+                    
+                    <!-- 上传 Tab -->
+                    <div id="upload-tab" class="tab-content">
+                        <div class="app-card" style="text-align: center; padding: 40px;">
+                            <h4>上传文件</h4>
+                            <p>支持Excel、图片等格式</p>
+                            <button class="btn" onclick="showToast('文件上传成功，正在识别...')" data-goto="committee-ocr-correction">选择文件上传</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 识别 Tab -->
+                    <div id="ocr-tab" class="tab-content" style="display: none;">
+                        <div class="app-card" style="text-align: center; padding: 40px;">
+                            <h4>拍照识别</h4>
+                            <p>拍摄纸质表格，OCR智能识别</p>
+                            <button class="btn" onclick="showToast('正在启动相机...')" data-goto="committee-ocr-correction">开始拍照</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 微信文件 Tab -->
+                    <div id="wechat-tab" class="tab-content" style="display: none;">
+                        <div class="app-card" style="text-align: center; padding: 40px;">
+                            <h4>从微信选择</h4>
+                            <p>从微信聊天记录中选择文件</p>
+                            <button class="btn" onclick="showToast('正在跳转微信...')" data-goto="committee-ocr-correction">选择微信文件</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 管理 Tab -->
+                    <div id="manage-tab" class="tab-content" style="display: none;">
+                        <h4>表格任务管理列表</h4>
+                        <div class="app-card">
+                            <h4>季度低保户统计</h4>
+                            <p>状态：进行中 | 进度：85/100 已完成 | 收集状态：正在收集</p>
+                            <button class="btn btn-sm" data-goto="committee-task-dashboard">查看详情</button>
+                        </div>
+                        <div class="app-card">
+                            <h4>年度人口普查</h4>
+                            <p>状态：已完成 | 进度：100/100 已完成 | 收集状态：已完成</p>
+                            <button class="btn btn-sm btn-secondary">查看详情</button>
+                        </div>
+                        <div class="app-card">
+                            <h4>村民健康档案更新</h4>
+                            <p>状态：草稿 | 进度：0/120 已完成 | 收集状态：未开始</p>
+                            <button class="btn btn-sm btn-secondary">编辑</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3.1 OCR识别与校对 -->
+        <div id="committee-ocr-correction" class="page">
+            <div class="card">
+                <div class="card-header"><h2>OCR识别与字段编辑</h2></div>
+                <div class="card-content">
+                    <p>系统已自动识别表单内容，请校对并编辑字段信息：</p>
+                    <div class="form-group">
+                        <label>字段1</label>
+                        <input type="text" value="姓名" placeholder="请输入字段名称">
+                    </div>
+                    <div class="form-group">
+                        <label>字段2</label>
+                        <input type="text" value="身份证件号码" placeholder="请输入字段名称">
+                    </div>
+                    <div class="form-group">
+                        <label>字段3</label>
+                        <input type="text" value="联系方式" placeholder="请输入字段名称">
+                    </div>
+                    <div class="form-group">
+                        <label>字段4</label>
+                        <input type="text" value="家庭年收入" placeholder="请输入字段名称">
+                    </div>
+                    <button class="btn btn-secondary" onclick="showToast('已添加新字段')">+ 添加字段</button>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-secondary" data-goto="committee-task-startup">返回</button>
+                    <button class="btn" data-goto="committee-data-collection">确认字段，生成表单 &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.2 数据预填 -->
+        <div id="committee-prefill-preview" class="page">
+            <div class="card">
+                <div class="card-header"><h2>数据预填：智能映射预览</h2></div>
+                <div class="card-content">
+                    <p>系统已根据“村大表”智能预填部分信息，请核对。</p>
+                    <div class="form-group confidence-99"><label>姓名 (置信度: 99%)</label><input type="text" value="张三" readonly></div>
+                    <div class="form-group confidence-99"><label>身份证件号码 (置信度: 99%)</label><input type="text" value="3301...XXXX" readonly></div>
+                    <div class="form-group confidence-60"><label>现住址 (置信度: 60%)</label><input type="text" value="刘营社区幸福路18号"><small style="color: var(--warning-color);">系统猜测“现住址”=“户籍所在地”，请核对。</small></div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn" data-goto="committee-task-dashboard">确认无误，发布任务 &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.3 数据采集 -->
+        <div id="committee-task-dashboard" class="page">
+            <div class="card">
+                <div class="card-header"><h2>任务看板：季度低保户统计</h2></div>
+                <div class="card-content">
+                    <div class="tabs">
+                        <div class="tab active">未完成 (3)</div>
+                        <div class="tab">已完成 (12)</div>
+                    </div>
+                    <div class="data-table">
+                        <div>李四 <button class="btn btn-sm" onclick="showToast('已进入李四的代填页面')">代填</button></div>
+                        <div>王五 <button class="btn btn-sm" onclick="showToast('已进入王五的代填页面')">代填</button></div>
+                        <div>赵六 <button class="btn btn-sm" onclick="showToast('已进入赵六的代填页面')">代填</button></div>
+                    </div>
+                    <br>
+                    <button class="btn btn-secondary" onclick="showToast('已向3位未完成村民发送提醒')">一键催办</button>
+                </div>
+                <div class="card-footer">
+                    <button class="btn" data-goto="committee-data-review">数据采集完成，去审核 &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.4 数据审核与导出 -->
+        <div id="committee-data-review" class="page">
+            <div class="card">
+                <div class="card-header"><h2>数据审核与导出</h2></div>
+                <div class="card-content" style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead><tr><th>姓名</th><th>身份证号</th><th>联系方式</th></tr></thead>
+                        <tbody>
+                            <tr><td>张三</td><td>3301...XXXX</td><td>138****1234</td></tr>
+                            <tr><td>李四</td><td>3301...YYYY</td><td>139****5678</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <button class="btn" onclick="showToast('Excel文件已生成')" data-goto="committee-conflict-queue">导出Excel并沉淀数据 &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.5 数据沉淀 -->
+        <div id="committee-conflict-queue" class="page">
+            <div class="card">
+                <div class="card-header"><h2>数据沉淀：冲突审核</h2></div>
+                <div class="card-content">
+                    <div class="app-card">
+                        <h4>村民：王五 | 字段：联系方式</h4>
+                        <p>原数据: <s>139****5678</s> | 新数据: <b style="color:var(--success-color)">188****8888</b></p>
+                        <button class="btn btn-sm" onclick="this.parentElement.style.display='none'; showToast('数据已更新')">采纳新值</button>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn" data-goto="committee-master-table">审核完成，查看村大表 &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.6 数据维护 -->
+        <div id="committee-master-table" class="page">
+            <div class="card">
+                <div class="card-header"><h2>数据维护：“村大表”管理</h2></div>
+                <div class="card-content">
+                    <input type="search" placeholder="搜索村民姓名...">
+                    <div class="app-card"><h4>张三</h4><p>3301...XXXX</p></div>
+                    <div class="app-card"><h4>李四</h4><p>3301...YYYY</p></div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn" data-goto="committee-task-list">返回任务管理</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 村民视角 -->
+    <div id="villager-view" class="container" style="display: none;">
+        <div class="phone-mockup">
+            <div class="phone-screen">
+                <span class="back-button" data-goto="role-selection-view">&larr; 返回</span>
+                <div id="villager-notifications" class="page">
+                    <h3 style="text-align:center; color: var(--primary-color)">我的消息</h3>
+                    <div class="app-card" data-goto="villager-form">
+                        <h4>季度低保户信息统计通知</h4>
+                        <p>截止日期: 2025-10-10。请您尽快填写。</p>
+                    </div>
+                </div>
+                <div id="villager-form" class="page">
+                    <h3 style="text-align:center; color: var(--primary-color)">信息确认与补充</h3>
+                    <div class="form-group"><label>姓名</label><input type="text" value="李四" readonly></div>
+                    <div class="form-group"><label>身份证号</label><input type="text" value="3301...YYYY" readonly></div>
+                    <div class="form-group"><label>联系方式</label><input type="text" value="139****5678"></div>
+                    <div class="form-group"><label>家庭年收入</label><input type="text" placeholder="请填写"></div>
+                    <button class="btn" style="width:100%" data-goto="villager-success">确认提交</button>
+                </div>
+                <div id="villager-success" class="page" style="text-align:center; padding-top: 100px;">
+                    <h2 style="color:var(--success-color)">提交成功！</h2>
+                    <p>感谢您的配合。</p>
+                    <button class="btn" data-goto="villager-notifications">返回我的消息</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const roleButtons = document.querySelectorAll('[data-role]');
+        const gotoButtons = document.querySelectorAll('[data-goto]');
+        const toastElement = document.getElementById('toast');
+
+        function switchView(viewId) {
+            document.querySelectorAll('.container, #role-selection-view').forEach(v => v.style.display = 'none');
+            const targetView = document.getElementById(viewId);
+            if(targetView) targetView.style.display = viewId === 'role-selection-view' ? 'flex' : 'block';
+        }
+
+        function switchPage(pageId) {
+            const parentView = document.getElementById(pageId).closest('.container, #villager-view .phone-screen');
+            parentView.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const targetPage = document.getElementById(pageId);
+            if(targetPage) targetPage.classList.add('active');
+        }
+
+        window.showToast = function(message) {
+            toastElement.textContent = message;
+            toastElement.classList.add('show');
+            setTimeout(() => toastElement.classList.remove('show'), 2000);
+        }
+
+        roleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const role = button.dataset.role;
+                if (role === 'committee') {
+                    switchView('committee-view');
+                    switchPage('committee-task-startup');
+                } else {
+                    switchView('villager-view');
+                    switchPage('villager-notifications');
+                }
+            });
+        });
+        
+        // Tab switching logic
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('tab')) {
+                const tabContainer = e.target.parentElement;
+                const tabs = tabContainer.querySelectorAll('.tab');
+                const tabContents = tabContainer.parentElement.querySelectorAll('.tab-content');
+                
+                // Remove active class from all tabs
+                tabs.forEach(tab => tab.classList.remove('active'));
+                // Add active class to clicked tab
+                e.target.classList.add('active');
+                
+                // Hide all tab contents
+                tabContents.forEach(content => content.style.display = 'none');
+                
+                // Show corresponding tab content
+                const tabName = e.target.dataset.tab;
+                const targetContent = document.getElementById(tabName + '-tab');
+                if (targetContent) {
+                    targetContent.style.display = 'block';
+                }
+            }
+        });
+
+        gotoButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const gotoId = button.dataset.goto;
+                if (gotoId === 'role-selection-view') {
+                    switchView('role-selection-view');
+                } else {
+                    switchPage(gotoId);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
