@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>村民表格工作用户旅程地图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .journey-map {
+            padding: 40px;
+        }
+        
+        .stage {
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .stage::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 60px;
+            bottom: -30px;
+            width: 3px;
+            background: linear-gradient(to bottom, #3498db, #2ecc71);
+            z-index: 1;
+        }
+        
+        .stage:last-child::before {
+            display: none;
+        }
+        
+        .stage-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stage-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .stage-title {
+            flex: 1;
+        }
+        
+        .stage-title h2 {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stage-subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .stage-content {
+            margin-left: 80px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .info-item h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-item h4::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #3498db;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+        
+        .info-item ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .info-item li {
+            padding: 5px 0;
+            color: #555;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .info-item li::before {
+            content: '•';
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .pain-points {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .pain-points h4 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .pain-points ul {
+            list-style: none;
+        }
+        
+        .pain-points li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .pain-points li::before {
+            content: '⚠️';
+            position: absolute;
+            left: 0;
+        }
+        
+        .time-indicator {
+            display: inline-block;
+            background: #f39c12;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            margin-top: 40px;
+            border-radius: 15px;
+        }
+        
+        .summary h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .summary-item h4 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .pain-level {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .pain-level span {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .stars {
+            color: #f1c40f;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .journey-map {
+                padding: 20px;
+            }
+            
+            .stage-content {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+            
+            .stage::before {
+                display: none;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>村民表格工作用户旅程地图</h1>
+            <p>基于9个村庄调研数据的完整流程分析</p>
+        </div>
+        
+        <div class="journey-map">
+            <!-- 阶段一：任务接收 -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">1</div>
+                    <div class="stage-title">
+                        <h2>任务接收</h2>
+                        <div class="stage-subtitle">痛点密集区 - 任务来源多样化</div>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>触发场景</h4>
+                            <ul>
+                                <li>上级部门下发统计任务</li>
+                                <li>定期数据统计要求</li>
+                                <li>专项调查活动</li>
+                                <li>突发事件应急统计</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>涉及人员</h4>
+                            <ul>
+                                <li>村书记（统筹协调）</li>
+                                <li>村主任（任务分配）</li>
+                                <li>文书（具体执行）</li>
+                                <li>统计员（数据处理）</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>使用工具</h4>
+                            <ul>
+                                <li>微信群通知</li>
+                                <li>电话沟通</li>
+                                <li>纸质通知文件</li>
+                                <li>邮件系统</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="time-indicator">⏱️ 耗时：0.5-1小时</div>
+                    <div class="pain-points">
+                        <h4>🚨 主要痛点</h4>
+                        <ul>
+                            <li>任务来源多样，难以统一管理</li>
+                            <li>时间要求紧急，缺乏提前规划</li>
+                            <li>要求不明确，需要反复确认</li>
+                            <li>通知渠道分散，容易遗漏</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段二：数据收集 -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">2</div>
+                    <div class="stage-title">
+                        <h2>数据收集</h2>
+                        <div class="stage-subtitle">最大痛点区 - 信息获取困难</div>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>收集内容</h4>
+                            <ul>
+                                <li>村民个人基本信息</li>
+                                <li>家庭人口结构情况</li>
+                                <li>经济收入状况</li>
+                                <li>土地使用情况</li>
+                                <li>社会保障信息</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>收集方式</h4>
+                            <ul>
+                                <li>入户走访调查</li>
+                                <li>电话询问核实</li>
+                                <li>微信群收集</li>
+                                <li>村民代表提供</li>
+                                <li>历史档案查阅</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>参与人员</h4>
+                            <ul>
+                                <li>网格员（一线收集）</li>
+                                <li>村干部（协调配合）</li>
+                                <li>村民代表（信息提供）</li>
+                                <li>志愿者（辅助工作）</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="time-indicator">⏱️ 耗时：2-5天</div>
+                    <div class="pain-points">
+                        <h4>🚨 主要痛点</h4>
+                        <ul>
+                            <li>村民配合度不高，信息收集困难</li>
+                            <li>数据分散在不同人员手中</li>
+                            <li>基础信息不准确，需要反复核实</li>
+                            <li>缺乏有效的数据管理系统</li>
+                            <li>隐私保护意识导致信息获取阻力</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段三：表格填写 -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">3</div>
+                    <div class="stage-title">
+                        <h2>表格填写</h2>
+                        <div class="stage-subtitle">技术痛点区 - 系统操作复杂</div>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>填写平台</h4>
+                            <ul>
+                                <li>政务服务平台</li>
+                                <li>统计局系统</li>
+                                <li>民政部门系统</li>
+                                <li>Excel表格</li>
+                                <li>专项调查系统</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>操作人员</h4>
+                            <ul>
+                                <li>文书（主要操作员）</li>
+                                <li>统计员（数据录入）</li>
+                                <li>村干部（审核把关）</li>
+                                <li>临时工作人员</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>技术要求</h4>
+                            <ul>
+                                <li>电脑操作技能</li>
+                                <li>多系统切换能力</li>
+                                <li>数据格式理解</li>
+                                <li>网络操作熟练度</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="time-indicator">⏱️ 耗时：1-3天</div>
+                    <div class="pain-points">
+                        <h4>🚨 主要痛点</h4>
+                        <ul>
+                            <li>需要在多个系统中重复录入相同数据</li>
+                            <li>系统操作复杂，学习成本高</li>
+                            <li>表格格式不统一，容易出错</li>
+                            <li>网络不稳定，影响工作效率</li>
+                            <li>年龄较大人员技术操作困难</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段四：数据核查 -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">4</div>
+                    <div class="stage-title">
+                        <h2>数据核查</h2>
+                        <div class="stage-subtitle">质量痛点区 - 准确性验证</div>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>核查方式</h4>
+                            <ul>
+                                <li>电话核实确认</li>
+                                <li>实地查看验证</li>
+                                <li>系统数据比对</li>
+                                <li>历史数据对比</li>
+                                <li>交叉验证核实</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>核查内容</h4>
+                            <ul>
+                                <li>数据逻辑一致性</li>
+                                <li>关键信息准确性</li>
+                                <li>格式规范性</li>
+                                <li>完整性检查</li>
+                                <li>时效性验证</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>参与角色</h4>
+                            <ul>
+                                <li>村干部（内部审核）</li>
+                                <li>上级部门（外部检查）</li>
+                                <li>专业人员（技术验证）</li>
+                                <li>村民（信息确认）</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="time-indicator">⏱️ 耗时：1-2天</div>
+                    <div class="pain-points">
+                        <h4>🚨 主要痛点</h4>
+                        <ul>
+                            <li>缺乏有效的数据验证机制</li>
+                            <li>错误数据需要重新收集和填写</li>
+                            <li>核查标准不统一</li>
+                            <li>反馈机制不及时</li>
+                            <li>重复核查增加工作量</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段五：提交报送 -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">5</div>
+                    <div class="stage-title">
+                        <h2>提交报送</h2>
+                        <div class="stage-subtitle">时间痛点区 - 截止期限压力</div>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>提交渠道</h4>
+                            <ul>
+                                <li>系统在线提交</li>
+                                <li>邮箱发送</li>
+                                <li>纸质报送</li>
+                                <li>U盘拷贝</li>
+                                <li>微信传输</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>格式要求</h4>
+                            <ul>
+                                <li>文件命名规范</li>
+                                <li>数据格式标准</li>
+                                <li>签字盖章要求</li>
+                                <li>附件材料齐全</li>
+                                <li>时间节点准确</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>责任人员</h4>
+                            <ul>
+                                <li>村书记（最终审批）</li>
+                                <li>文书（具体提交）</li>
+                                <li>统计员（技术支持）</li>
+                                <li>村主任（协调配合）</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="time-indicator">⏱️ 耗时：0.5-1小时</div>
+                    <div class="pain-points">
+                        <h4>🚨 主要痛点</h4>
+                        <ul>
+                            <li>提交渠道多样，容易遗漏</li>
+                            <li>时间节点紧张，经常加班</li>
+                            <li>提交后缺乏确认反馈</li>
+                            <li>格式要求严格，容易被退回</li>
+                            <li>网络问题导致提交失败</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段六：后续跟进 -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">6</div>
+                    <div class="stage-title">
+                        <h2>后续跟进</h2>
+                        <div class="stage-subtitle">管理痛点区 - 持续性服务</div>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>跟进内容</h4>
+                            <ul>
+                                <li>处理结果反馈</li>
+                                <li>数据更新维护</li>
+                                <li>问题整改落实</li>
+                                <li>村民满意度调查</li>
+                                <li>经验总结改进</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>沟通方式</h4>
+                            <ul>
+                                <li>电话回访</li>
+                                <li>实地走访</li>
+                                <li>微信群通知</li>
+                                <li>村务公开栏</li>
+                                <li>村民大会</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>管理要求</h4>
+                            <ul>
+                                <li>建立跟进档案</li>
+                                <li>定期更新数据</li>
+                                <li>及时处理反馈</li>
+                                <li>评估工作效果</li>
+                                <li>持续改进优化</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="time-indicator">⏱️ 耗时：持续性工作</div>
+                    <div class="pain-points">
+                        <h4>🚨 主要痛点</h4>
+                        <ul>
+                            <li>缺乏有效的跟进机制</li>
+                            <li>问题处理周期长</li>
+                            <li>村民满意度难以评估</li>
+                            <li>数据更新不及时</li>
+                            <li>工作成效难以量化</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 总结分析 -->
+        <div class="summary">
+            <h3>🎯 关键发现与改进方向</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <h4>💥 痛点集中区域</h4>
+                    <p><strong>数据收集阶段</strong>：耗时最长，问题最多</p>
+                    <p><strong>表格填写阶段</strong>：技术门槛高，重复工作多</p>
+                    <p><strong>提交报送阶段</strong>：时间压力大，格式要求严</p>
+                    <div class="pain-level">
+                        <span>痛点严重程度：</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <h4>👥 关键人员角色</h4>
+                    <p><strong>村书记/村主任</strong>：统筹协调，最终责任人</p>
+                    <p><strong>文书/统计员</strong>：具体操作，技术要求高</p>
+                    <p><strong>网格员</strong>：数据收集，接触村民最多</p>
+                    <p><strong>村民</strong>：信息提供者，配合度影响效率</p>
+                </div>
+                
+                <div class="summary-item">
+                    <h4>🛠️ 工具使用现状</h4>
+                    <p><strong>传统工具</strong>：电话、纸质表格仍大量使用</p>
+                    <p><strong>数字工具</strong>：微信、各类系统平台使用频繁</p>
+                    <p><strong>技术差距</strong>：不同年龄段人员技术水平差异大</p>
+                </div>
+                
+                <div class="summary-item">
+                    <h4>⏰ 时间分布特点</h4>
+                    <p><strong>集中性</strong>：某些时间段任务集中，工作量大</p>
+                    <p><strong>紧急性</strong>：多数任务时间要求紧，缺乏缓冲</p>
+                    <p><strong>重复性</strong>：相似任务重复出现，缺乏优化</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

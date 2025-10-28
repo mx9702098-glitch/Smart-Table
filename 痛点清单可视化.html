@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>村庄表格工作痛点清单</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .pain-points-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .pain-points-table th {
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .pain-points-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            vertical-align: top;
+        }
+        
+        .pain-points-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .pain-points-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .severity-stars {
+            color: #f39c12;
+            font-size: 1.2em;
+        }
+        
+        .pain-category {
+            font-weight: bold;
+            color: #2c3e50;
+            background: #ecf0f1;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+        
+        .village-count {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .description {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .stats-section {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .stat-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .stat-description {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .themes-section {
+            margin-top: 40px;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .themes-section h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+        
+        .theme-item {
+            background: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .theme-rank {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .theme-content {
+            flex: 1;
+        }
+        
+        .theme-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .theme-keywords {
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .theme-villages {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .theme-weight {
+            background: #f39c12;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .pain-points-table {
+                font-size: 0.9em;
+            }
+            
+            .pain-points-table th,
+            .pain-points-table td {
+                padding: 10px 8px;
+            }
+            
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .theme-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .theme-rank {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .theme-weight {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>村庄表格工作痛点清单</h1>
+            <p>基于9个村庄调研数据的综合分析</p>
+        </div>
+        
+        <div class="content">
+            <!-- 痛点清单表格 -->
+            <table class="pain-points-table">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>痛点类别</th>
+                        <th>具体描述</th>
+                        <th>涉及村庄</th>
+                        <th>严重程度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td><span class="pain-category">重复填表</span></td>
+                        <td class="description">同一数据需要在多个系统、多张表格中重复录入，造成大量重复劳动，效率低下</td>
+                        <td><span class="village-count">9/9</span></td>
+                        <td><span class="severity-stars">⭐⭐⭐⭐⭐</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td><span class="pain-category">系统繁多</span></td>
+                        <td class="description">需要使用多个不同系统，操作复杂，学习成本高，切换频繁影响工作效率</td>
+                        <td><span class="village-count">8/9</span></td>
+                        <td><span class="severity-stars">⭐⭐⭐⭐⭐</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td><span class="pain-category">数据不准确</span></td>
+                        <td class="description">基础数据缺失或错误，村民信息更新不及时，影响后续统计和决策的准确性</td>
+                        <td><span class="village-count">7/9</span></td>
+                        <td><span class="severity-stars">⭐⭐⭐⭐</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td><span class="pain-category">时间压力大</span></td>
+                        <td class="description">表格填报任务多且时间紧，经常需要加班完成，影响其他日常工作的开展</td>
+                        <td><span class="village-count">9/9</span></td>
+                        <td><span class="severity-stars">⭐⭐⭐⭐⭐</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td><span class="pain-category">技术门槛高</span></td>
+                        <td class="description">年龄较大的工作人员难以掌握新系统操作，技术培训不足，操作错误频发</td>
+                        <td><span class="village-count">6/9</span></td>
+                        <td><span class="severity-stars">⭐⭐⭐⭐</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>6</strong></td>
+                        <td><span class="pain-category">缺乏培训</span></td>
+                        <td class="description">对新系统、新要求缺乏有效培训和指导，工作人员只能摸索学习</td>
+                        <td><span class="village-count">7/9</span></td>
+                        <td><span class="severity-stars">⭐⭐⭐</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>7</strong></td>
+                        <td><span class="pain-category">沟通协调难</span></td>
+                        <td class="description">跨部门、跨层级的数据收集和协调困难，信息传递不畅，配合度不高</td>
+                        <td><span class="village-count">5/9</span></td>
+                        <td><span class="severity-stars">⭐⭐⭐</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- 统计数据 -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <h3>调研村庄总数</h3>
+                    <div class="stat-number">9</div>
+                    <div class="stat-description">覆盖不同地区和规模的村庄社区</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>识别痛点总数</h3>
+                    <div class="stat-number">7</div>
+                    <div class="stat-description">核心痛点类别，涵盖工作全流程</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>高严重度痛点</h3>
+                    <div class="stat-number">4</div>
+                    <div class="stat-description">需要优先解决的关键问题</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>普遍性痛点</h3>
+                    <div class="stat-number">2</div>
+                    <div class="stat-description">所有村庄都面临的共同问题</div>
+                </div>
+            </div>
+            
+            <!-- 主题聚类 -->
+            <div class="themes-section">
+                <h2>🎯 主题聚类分析（按关注度排序）</h2>
+                
+                <div class="theme-item">
+                    <div class="theme-rank">1</div>
+                    <div class="theme-content">
+                        <div class="theme-title">表格填报效率优化</div>
+                        <div class="theme-keywords">关键词：重复填写、自动化、数据共享</div>
+                        <div class="theme-villages">涉及村庄：全部9个村庄</div>
+                    </div>
+                    <div class="theme-weight">35%</div>
+                </div>
+                
+                <div class="theme-item">
+                    <div class="theme-rank">2</div>
+                    <div class="theme-content">
+                        <div class="theme-title">系统操作简化</div>
+                        <div class="theme-keywords">关键词：操作复杂、界面友好、培训需求</div>
+                        <div class="theme-villages">涉及村庄：8个村庄</div>
+                    </div>
+                    <div class="theme-weight">25%</div>
+                </div>
+                
+                <div class="theme-item">
+                    <div class="theme-rank">3</div>
+                    <div class="theme-content">
+                        <div class="theme-title">数据质量管理</div>
+                        <div class="theme-keywords">关键词：数据准确性、基础信息、核查机制</div>
+                        <div class="theme-villages">涉及村庄：7个村庄</div>
+                    </div>
+                    <div class="theme-weight">20%</div>
+                </div>
+                
+                <div class="theme-item">
+                    <div class="theme-rank">4</div>
+                    <div class="theme-content">
+                        <div class="theme-title">工作时间管理</div>
+                        <div class="theme-keywords">关键词：时间分配、工作量、优先级</div>
+                        <div class="theme-villages">涉及村庄：6个村庄</div>
+                    </div>
+                    <div class="theme-weight">15%</div>
+                </div>
+                
+                <div class="theme-item">
+                    <div class="theme-rank">5</div>
+                    <div class="theme-content">
+                        <div class="theme-title">技术支持服务</div>
+                        <div class="theme-keywords">关键词：技术培训、问题解决、持续支持</div>
+                        <div class="theme-villages">涉及村庄：4个村庄</div>
+                    </div>
+                    <div class="theme-weight">5%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

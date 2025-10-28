@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>村庄表格调研情感分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+        
+        .sentiment-details {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .sentiment-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+        }
+        
+        .sentiment-card.negative {
+            border-left-color: #e74c3c;
+        }
+        
+        .sentiment-card.neutral {
+            border-left-color: #f39c12;
+        }
+        
+        .sentiment-card.positive {
+            border-left-color: #27ae60;
+        }
+        
+        .sentiment-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .sentiment-percentage {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .sentiment-card.negative .sentiment-percentage {
+            color: #e74c3c;
+        }
+        
+        .sentiment-card.neutral .sentiment-percentage {
+            color: #f39c12;
+        }
+        
+        .sentiment-card.positive .sentiment-percentage {
+            color: #27ae60;
+        }
+        
+        .keywords {
+            margin-top: 15px;
+        }
+        
+        .keywords h4 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 3px;
+            font-size: 0.9em;
+        }
+        
+        .village-analysis {
+            margin-top: 40px;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .village-analysis h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+        
+        .village-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .village-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .village-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .village-sentiment {
+            margin-bottom: 10px;
+        }
+        
+        .sentiment-label {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .sentiment-label.negative {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .sentiment-label.neutral {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .sentiment-label.positive {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .village-keywords {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sentiment-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .village-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>村庄表格调研情感分析</h1>
+            <p>基于9个村庄调研文档的文本情感倾向分析</p>
+        </div>
+        
+        <div class="content">
+            <!-- 图表区域 -->
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">整体情感分布</div>
+                    <div class="chart-wrapper">
+                        <canvas id="sentimentPieChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">各村庄情感对比</div>
+                    <div class="chart-wrapper">
+                        <canvas id="villageBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 情感详细分析 -->
+            <div class="sentiment-details">
+                <div class="sentiment-card negative">
+                    <h3>😰 负面情感</h3>
+                    <div class="sentiment-percentage">70%</div>
+                    <p>占主导地位，反映出村民和工作人员对当前表格工作的强烈不满</p>
+                    <div class="keywords">
+                        <h4>高频词汇：</h4>
+                        <span class="keyword-tag">累</span>
+                        <span class="keyword-tag">麻烦</span>
+                        <span class="keyword-tag">头疼</span>
+                        <span class="keyword-tag">忙不过来</span>
+                        <span class="keyword-tag">太复杂</span>
+                        <span class="keyword-tag">搞不清楚</span>
+                        <span class="keyword-tag">没时间</span>
+                        <span class="keyword-tag">重复填写</span>
+                    </div>
+                </div>
+                
+                <div class="sentiment-card neutral">
+                    <h3>😐 中性情感</h3>
+                    <div class="sentiment-percentage">20%</div>
+                    <p>主要为客观描述和理性分析，体现了工作人员的专业态度</p>
+                    <div class="keywords">
+                        <h4>高频词汇：</h4>
+                        <span class="keyword-tag">需要</span>
+                        <span class="keyword-tag">要求</span>
+                        <span class="keyword-tag">流程</span>
+                        <span class="keyword-tag">系统</span>
+                        <span class="keyword-tag">数据</span>
+                        <span class="keyword-tag">统计</span>
+                        <span class="keyword-tag">管理</span>
+                        <span class="keyword-tag">规范</span>
+                    </div>
+                </div>
+                
+                <div class="sentiment-card positive">
+                    <h3>😊 正面情感</h3>
+                    <div class="sentiment-percentage">10%</div>
+                    <p>虽然占比较小，但体现了对改进和优化的期待与希望</p>
+                    <div class="keywords">
+                        <h4>高频词汇：</h4>
+                        <span class="keyword-tag">希望</span>
+                        <span class="keyword-tag">期待</span>
+                        <span class="keyword-tag">改进</span>
+                        <span class="keyword-tag">便民</span>
+                        <span class="keyword-tag">效率</span>
+                        <span class="keyword-tag">简化</span>
+                        <span class="keyword-tag">支持</span>
+                        <span class="keyword-tag">认同</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 各村庄情感特点 -->
+            <div class="village-analysis">
+                <h2>🏘️ 各村庄情感特点分析</h2>
+                <div class="village-grid">
+                    <div class="village-item">
+                        <div class="village-name">卧龙社区</div>
+                        <div class="village-sentiment">
+                            <span class="sentiment-label negative">焦虑</span>
+                            <span class="sentiment-label negative">无奈</span>
+                        </div>
+                        <div class="village-keywords">"太多表格"、"重复填写"、"系统太多"</div>
+                    </div>
+                    
+                    <div class="village-item">
+                        <div class="village-name">金塘村</div>
+                        <div class="village-sentiment">
+                            <span class="sentiment-label negative">困惑</span>
+                            <span class="sentiment-label negative">压力</span>
+                        </div>
+                        <div class="village-keywords">"不会操作"、"数据不准"、"学不会"</div>
+                    </div>
+                    
+                    <div class="village-item">
+                        <div class="village-name">两重村</div>
+                        <div class="village-sentiment">
+                            <span class="sentiment-label negative">抱怨</span>
+                            <span class="sentiment-label negative">疲惫</span>
+                        </div>
+                        <div class="village-keywords">"天天填表"、"没时间"、"累死了"</div>
+                    </div>
+                    
+                    <div class="village-item">
+                        <div class="village-name">山川村</div>
+                        <div class="village-sentiment">
+                            <span class="sentiment-label negative">无奈</span>
+                            <span class="sentiment-label positive">期待</span>
+                        </div>
+                        <div class="village-keywords">"希望简化"、"太复杂"、"能不能改进"</div>
+                    </div>
+                    
+                    <div class="village-item">
+                        <div class="village-name">同花社区</div>
+                        <div class="village-sentiment">
+                            <span class="sentiment-label negative">焦虑</span>
+                            <span class="sentiment-label negative">困惑</span>
+                        </div>
+                        <div class="village-keywords">"系统太多"、"搞不清楚"、"经常出错"</div>
+                    </div>
+                    
+                    <div class="village-item">
+                        <div class="village-name">其他村庄</div>
+                        <div class="village-sentiment">
+                            <span class="sentiment-label negative">普遍负面</span>
+                            <span class="sentiment-label neutral">理性分析</span>
+                        </div>
+                        <div class="village-keywords">类似问题和困扰，期待改进和支持</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 整体情感分布饼图
+        const sentimentCtx = document.getElementById('sentimentPieChart').getContext('2d');
+        new Chart(sentimentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['负面情感', '中性情感', '正面情感'],
+                datasets: [{
+                    data: [70, 20, 10],
+                    backgroundColor: [
+                        '#e74c3c',
+                        '#f39c12',
+                        '#27ae60'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 各村庄情感对比柱状图
+        const villageCtx = document.getElementById('villageBarChart').getContext('2d');
+        new Chart(villageCtx, {
+            type: 'bar',
+            data: {
+                labels: ['卧龙社区', '金塘村', '两重村', '山川村', '同花社区'],
+                datasets: [
+                    {
+                        label: '负面情感',
+                        data: [80, 75, 85, 60, 78],
+                        backgroundColor: '#e74c3c',
+                        borderRadius: 5
+                    },
+                    {
+                        label: '中性情感',
+                        data: [15, 20, 12, 25, 18],
+                        backgroundColor: '#f39c12',
+                        borderRadius: 5
+                    },
+                    {
+                        label: '正面情感',
+                        data: [5, 5, 3, 15, 4],
+                        backgroundColor: '#27ae60',
+                        borderRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
